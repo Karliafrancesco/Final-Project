@@ -1,3 +1,3 @@
-# Final Project - Find Auto
+# Final Project - Find Film
 
-Verify VIN Number.
+View films, actors and give reviews!
