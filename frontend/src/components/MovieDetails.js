@@ -33,9 +33,6 @@ const MovieDetails = () => {
       return <div>loading</div>;
    }
 
-   // const found = movies.find(({ id }) => id === movie_id);
-   console.log(specificMovie);
-
    return (
       <Container>
          <Wrap>
@@ -93,7 +90,7 @@ const Wrap = styled.div`
    margin-left: 200px;
    margin-top: 70px;
    padding-left: 40px;
-   max-width: fit-content;
+   max-width: 700px;
    height: fit-content;
 `;
 

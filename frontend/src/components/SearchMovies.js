@@ -16,7 +16,7 @@ const SearchMovies = () => {
       console.log("submit");
       console.log(query);
 
-      const url = `/getMoviesSearch/?search=${query}`;
+      const url = `/moviessearch/?search=${query}`;
 
       try {
          const res = await fetch(url);

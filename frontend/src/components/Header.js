@@ -17,7 +17,10 @@ const Navbar = () => {
                   <BiCameraMovie style={{ color: "black" }} />
                   <Title>Find Film</Title>
                </TitleAndIcon>
-               <SignIn>Sign In</SignIn>
+               <Creds>
+                  <SignIn>Sign in |</SignIn>
+                  <SignUp> Sign up</SignUp>
+               </Creds>
             </Wrapper>
          </Container>
       </>
@@ -60,7 +63,20 @@ const Title = styled.div`
    margin-left: 0px;
 `;
 
+const Creds = styled.div`
+   display: flex;
+`;
+
 const SignIn = styled.button`
+   background: transparent;
+   border: none;
+   color: white;
+   margin-right: 3px;
+   font-weight: bold;
+   cursor: pointer;
+`;
+
+const SignUp = styled.button`
    background: transparent;
    border: none;
    margin-right: 100px;
