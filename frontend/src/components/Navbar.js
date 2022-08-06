@@ -30,7 +30,6 @@ const Wrapper = styled.div`
    color: white;
    box-shadow: 0 6px 6px -6px gray;
    font-weight: bold;
-   /* background: var(--color-background-blue); */
    background: #232324;
    box-shadow: 1px 6px 6px -6px gray;
 `;

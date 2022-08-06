@@ -7,13 +7,13 @@ const Navbar = () => {
 
    return (
       <>
-         <Container
-            onClick={() => {
-               nav("/");
-            }}
-         >
+         <Container>
             <Wrapper>
-               <TitleAndIcon>
+               <TitleAndIcon
+                  onClick={() => {
+                     nav("/");
+                  }}
+               >
                   <BiCameraMovie style={{ color: "black" }} />
                   <Title>Find Film</Title>
                </TitleAndIcon>
@@ -43,12 +43,11 @@ const TitleAndIcon = styled.div`
    margin: 10px 0 10px 100px;
    border-radius: 5px;
    padding: 0 6px;
+   cursor: pointer;
 `;
 
 const Container = styled.div`
-   /* position: fixed; */
    width: 100%;
-   cursor: pointer;
 `;
 
 const Title = styled.div`
