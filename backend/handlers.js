@@ -80,56 +80,30 @@ const handleSignUp = async (req, res) => {
 
 const handleSignIn = async (req, res) => {
    const client = new MongoClient(MONGO_URI, options);
-
-   // Extract the sign in details from the request.
-   const { username, password } = req.body;
-
-   // If either value is missing, respond with a bad request.
-   if (!username || !password) {
-      return res.status(400).json({
-         status: 400,
-         message: "Missing data",
-         data: req.body,
-      });
-   }
-
    try {
       await client.connect();
-      const users = client.db("db-name").collection("users");
-
-      const user = await users.findOne({ username });
-
-      // Verify that the user attempting to sign in exists.
-      if (!user) {
-         return res.status(404).json({
-            status: 404,
-            message: "No user found",
-            data: { username },
-         });
+      console.log("Connected!");
+      const db = client.db("db-name");
+      const users = db.collection("users");
+      const user = await users.findOne({ username: req.body.username });
+      if (user === null) {
+         return res
+            .status(400)
+            .json({ status: 400, message: "User not found" });
       }
-
-      // Verify that the password entered is correct.
-      const verify = await bcrypt.compare(password, user.password);
-
-      if (!verify) {
-         return res.status(401).json({
-            status: 401,
-            message: "Incorrect password",
-            data: { username },
-         });
+      if (await bcrypt.compare(req.body.password, user.password)) {
+         const username = req.body.username;
+         const user = { name: username };
+         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+         res.json({ accessToken: accessToken });
       } else {
-         // Remove the user's password from the response.
-         const clone = { ...user };
-         delete clone.password;
-
-         return res.status(200).json({ status: 200, data: { user: clone } });
+         return res
+            .status(400)
+            .json({ message: "Information enterted is not correct" });
       }
-   } catch (e) {
-      console.error("Error signing in:", e);
-      return res.status(500).json({ status: 500, message: e.name });
-   } finally {
-      client.close();
-   }
+   } catch {}
+   client.close();
+   console.log("disconnected!");
 };
 
 //-----------------------------------------------------------
@@ -195,6 +169,7 @@ const handleLoggedUser = async (req, res) => {
       //find all users in users collection and converts it to array
       const users = await db.collection("users").find().toArray();
       const result = users.filter((user) => user.username === req.user.name);
+      console.log(result);
 
       // if (users) {
       //    //to delete password from each user so its not shown for security
@@ -251,21 +226,6 @@ const handlePostReview = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
-const handleLogin = async (req, res) => {
-   const username = req.body.username;
-   const user = { name: username };
-
-   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-   res.json({ accessToken: accessToken });
-
-   const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-   return res.status(200).json({
-      message: "Success",
-      token: accessToken,
-      refreshToken: refreshToken,
-   });
-};
-
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
@@ -275,7 +235,6 @@ module.exports = {
    handleMoviesSearch,
    handleUsers,
    handlePostReview,
-   handleLogin,
    authenticateToken,
    handleLoggedUser,
 };

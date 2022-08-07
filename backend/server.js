@@ -10,7 +10,7 @@ const {
    handlePostReview,
    handleMoviesSearch,
    handleUsers,
-   handleLogin,
+   // handleLogin,
    authenticateToken,
    handleLoggedUser,
 } = require("./handlers");
@@ -34,9 +34,10 @@ express()
    .get("/moviessearch", handleMoviesSearch)
    //gets all users in user collection
    .get("/users", handleUsers)
+   //verifies handleSign, if everything working a user will be logged in
    .get("/loggedinuser", authenticateToken, handleLoggedUser)
 
-   .post("/login", handleLogin)
+   // .post("/login", handleLogin)
 
    //-----------------------------------------------------------
 

@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import Navbar from "./components/Navbar";
 import GlobalStyles from "./GlobalStyles";
 import MovieDetails from "./components/MovieDetails";
 import SearchMovies from "./components/SearchMovies";
+import SignUp from "./components/Header/SignUp";
+import SignIn from "./components/Header/SignIn";
 
 const App = () => {
    return (
@@ -20,6 +22,8 @@ const App = () => {
                   path="/movie/:movie_id"
                   element={<MovieDetails />}
                />
+               <Route exact path="/signup" element={<SignUp />} />
+               <Route exact path="/signin" element={<SignIn />} />
             </Routes>
          </Wrapper>
       </Router>

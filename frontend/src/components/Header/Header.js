@@ -18,8 +18,22 @@ const Navbar = () => {
                   <Title>Find Film</Title>
                </TitleAndIcon>
                <Creds>
-                  <SignIn>Sign in |</SignIn>
-                  <SignUp> Sign up</SignUp>
+                  <SignIn
+                     onClick={() => {
+                        nav("/signin");
+                     }}
+                  >
+                     {" "}
+                     Sign in |
+                  </SignIn>
+                  <SignUp
+                     onClick={() => {
+                        nav("/signup");
+                     }}
+                  >
+                     {" "}
+                     Sign up
+                  </SignUp>
                </Creds>
             </Wrapper>
          </Container>
@@ -74,6 +88,12 @@ const SignIn = styled.button`
    margin-right: 3px;
    font-weight: bold;
    cursor: pointer;
+
+   &:hover {
+      color: gold;
+      text-decoration: none;
+      border: none;
+   }
 `;
 
 const SignUp = styled.button`
@@ -83,4 +103,10 @@ const SignUp = styled.button`
    color: white;
    font-weight: bold;
    cursor: pointer;
+
+   &:hover {
+      color: gold;
+      text-decoration: none;
+      border: none;
+   }
 `;
