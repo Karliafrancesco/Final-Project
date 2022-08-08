@@ -7,6 +7,7 @@ import MovieDetails from "./components/MovieDetails";
 import SearchMovies from "./components/SearchMovies";
 import SignUp from "./components/Header/SignUp";
 import SignIn from "./components/Header/SignIn";
+import Profile from "./components/Profile";
 
 const App = () => {
    return (
@@ -24,6 +25,7 @@ const App = () => {
                />
                <Route exact path="/signup" element={<SignUp />} />
                <Route exact path="/signin" element={<SignIn />} />
+               <Route exact path="/profile/:id" element={<Profile />} />
             </Routes>
          </Wrapper>
       </Router>

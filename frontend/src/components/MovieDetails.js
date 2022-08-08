@@ -115,6 +115,7 @@ const Poster = styled.img`
    padding-top: 10px;
    width: 300px;
    height: 450px;
+   border-radius: 15px;
 `;
 
 const Genres = styled.div`

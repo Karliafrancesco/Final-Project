@@ -3,13 +3,33 @@ import styled from "styled-components";
 
 const SignIn = () => {
    const [username, setUsername] = useState("");
-   const [name, setName] = useState("");
-   const [lastName, setLastName] = useState("");
    const [password, setPassword] = useState("");
    const [msg, setMsg] = useState("");
+   const [status, setStatus] = useState("loading");
 
    const handleSubmit = (e) => {
       e.preventDefault();
+
+      fetch("/signin", {
+         method: "POST",
+         body: JSON.stringify({
+            username: username,
+            password: password,
+         }),
+         headers: {
+            "Content-type": "application/json",
+         },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            if (response.status == 400) {
+               console.log("unfdefined token");
+            } else {
+               localStorage.setItem("accessToken", response.accessToken);
+               console.log(response);
+               window.location.href = "/";
+            }
+         });
    };
 
    return (
@@ -21,14 +41,6 @@ const SignIn = () => {
                   <Input
                      placeholder="username"
                      onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <Input
-                     placeholder="first name"
-                     onChange={(e) => setName(e.target.value)}
-                  />
-                  <Input
-                     placeholder="last name"
-                     onChange={(e) => setLastName(e.target.value)}
                   />
                   <Input
                      type="password"

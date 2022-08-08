@@ -15,13 +15,20 @@ const options = {
 const fetch = (...args) =>
    import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
 const authenticateToken = (req, res, next) => {
    const authHeader = req.headers["authorization"];
    const token = authHeader && authHeader.split(" ")[1];
-   if (token == null) return res.sendStatus(401);
+   if (token == null)
+      return res.status(401).json({ status: 401, message: "no credentials" });
 
    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403);
+      if (err)
+         return res
+            .status(403)
+            .json({ status: 403, message: "No access to this page" });
       req.user = user;
       next();
    });
@@ -85,15 +92,21 @@ const handleSignIn = async (req, res) => {
       console.log("Connected!");
       const db = client.db("db-name");
       const users = db.collection("users");
+
+      //looks in collection to see if that user exists
       const user = await users.findOne({ username: req.body.username });
+      // if user doesn't exists return error
       if (user === null) {
          return res
             .status(400)
             .json({ status: 400, message: "User not found" });
       }
+
+      //if user exists it verifies if both passwords match, bycrypt hides password in DB
       if (await bcrypt.compare(req.body.password, user.password)) {
          const username = req.body.username;
          const user = { name: username };
+         // if sign if complete, user is granted ACCESS TOKEN
          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
          res.json({ accessToken: accessToken });
       } else {
@@ -157,9 +170,6 @@ const handleUsers = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
-//-----------------------------------------------------------
-//-----------------------------------------------------------
-
 const handleLoggedUser = async (req, res) => {
    const client = new MongoClient(MONGO_URI, options);
    await client.connect();
@@ -169,7 +179,7 @@ const handleLoggedUser = async (req, res) => {
       //find all users in users collection and converts it to array
       const users = await db.collection("users").find().toArray();
       const result = users.filter((user) => user.username === req.user.name);
-      console.log(result);
+      const user = result[0];
 
       // if (users) {
       //    //to delete password from each user so its not shown for security
@@ -177,7 +187,7 @@ const handleLoggedUser = async (req, res) => {
       //       delete obj["password"];
       //    });
       //    return
-      res.status(200).json({ status: 200, user: result, message: "logged" });
+      res.status(200).json({ status: 200, user: user, message: "logged" });
       // } else {
       //    return res
       //       .status(404)
@@ -212,6 +222,7 @@ const handlePostReview = async (req, res) => {
       const db = client.db("db-name");
 
       await db.collection("reviews").insertOne({
+         author: req.user._id,
          review: req.body.review,
          movie_id: movie_id,
       });
@@ -226,6 +237,8 @@ const handlePostReview = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
+const handleRate = async (req, res) => {};
+
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
@@ -237,4 +250,5 @@ module.exports = {
    handlePostReview,
    authenticateToken,
    handleLoggedUser,
+   handleRate,
 };

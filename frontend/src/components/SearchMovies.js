@@ -28,6 +28,11 @@ const SearchMovies = () => {
       }
    };
 
+   if (movies.length <= 0) {
+      console.log("nomovies");
+      <div styled={{ color: "white" }}>NO MOVIES</div>;
+   }
+
    return (
       <Container>
          <SearchForm onSubmit={searchMovies}>
@@ -40,6 +45,7 @@ const SearchMovies = () => {
             />
             <SearchButton type="submit">Search</SearchButton>
          </SearchForm>
+
          <Wrap>
             {movies.map((movie) => {
                return (
@@ -122,6 +128,10 @@ const Img = styled.img`
    height: 350px;
    width: 250px;
    box-shadow: 1px 1px 4px #888888;
+
+   &:hover {
+      box-shadow: 1px 1px 2px 2px #888888;
+   }
 `;
 
 const ImageNotAvailable = styled.div`
@@ -134,8 +144,14 @@ const ImageNotAvailable = styled.div`
 
 const Title = styled.div`
    color: white;
+
+   &:hover {
+      color: gold;
+   }
 `;
 
-const LinkTo = styled(Link)``;
+const LinkTo = styled(Link)`
+   text-decoration: none;
+`;
 
 export default SearchMovies;

@@ -1,9 +1,18 @@
 import styled from "styled-components";
 import { BiCameraMovie } from "react-icons/bi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../UserContext";
 
 const Navbar = () => {
    let nav = useNavigate();
+
+   const { user } = useContext(UserContext);
+
+   const removeAccessKey = () => {
+      localStorage.removeItem("accessToken");
+      window.location.href = "/";
+   };
 
    return (
       <>
@@ -18,22 +27,45 @@ const Navbar = () => {
                   <Title>Find Film</Title>
                </TitleAndIcon>
                <Creds>
-                  <SignIn
-                     onClick={() => {
-                        nav("/signin");
-                     }}
-                  >
-                     {" "}
-                     Sign in |
-                  </SignIn>
-                  <SignUp
-                     onClick={() => {
-                        nav("/signup");
-                     }}
-                  >
-                     {" "}
-                     Sign up
-                  </SignUp>
+                  {user === null ? (
+                     <>
+                        <SignIn
+                           onClick={() => {
+                              nav("/signin");
+                           }}
+                        >
+                           {" "}
+                           Sign in |
+                        </SignIn>
+                        <SignUp
+                           onClick={() => {
+                              nav("/signup");
+                           }}
+                        >
+                           {" "}
+                           Sign up
+                        </SignUp>
+                     </>
+                  ) : (
+                     <>
+                        <LinkTo to={`/profile/${user._id}`}>
+                           <ProfileName
+                           // onClick={() => {
+                           //    nav("/profile");
+                           // }}
+                           >
+                              {user.username}
+                           </ProfileName>
+                        </LinkTo>
+                        <SignOut
+                           onClick={() => {
+                              removeAccessKey();
+                           }}
+                        >
+                           signout
+                        </SignOut>
+                     </>
+                  )}
                </Creds>
             </Wrapper>
          </Container>
@@ -109,4 +141,12 @@ const SignUp = styled.button`
       text-decoration: none;
       border: none;
    }
+`;
+
+const LinkTo = styled(Link)``;
+
+const SignOut = styled.button``;
+
+const ProfileName = styled.div`
+   cursor: pointer;
 `;
