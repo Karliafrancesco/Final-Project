@@ -208,7 +208,7 @@ const handlePostReview = async (req, res) => {
    const client = new MongoClient(MONGO_URI, options);
    await client.connect();
 
-   const { movie_id } = req.body;
+   const { review, author, movie_id } = req.body;
 
    if (!review) {
       return res.status(400).json({
@@ -222,12 +222,12 @@ const handlePostReview = async (req, res) => {
       const db = client.db("db-name");
 
       await db.collection("reviews").insertOne({
-         author: req.user._id,
-         review: req.body.review,
+         author: req.body.author,
          movie_id: movie_id,
+         review: req.body.review,
       });
    } catch (e) {
-      console.error("Error signing in:", e);
+      console.error("Error posting review:", e);
       return res.status(500).json({ status: 500, message: e.name });
    } finally {
       client.close();
@@ -237,7 +237,15 @@ const handlePostReview = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
+const handleMovieReviews = async (req, res) => {};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
 const handleRate = async (req, res) => {};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -251,4 +259,5 @@ module.exports = {
    authenticateToken,
    handleLoggedUser,
    handleRate,
+   handleMovieReviews,
 };

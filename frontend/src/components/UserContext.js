@@ -1,4 +1,6 @@
 import { createContext, useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
+import { FiLoader } from "react-icons/fi";
 
 export const UserContext = createContext(null);
 
@@ -25,7 +27,13 @@ export const UserProvider = ({ children }) => {
    }, []);
 
    if (accessToken !== null && user === null) {
-      return <div>loading</div>;
+      return (
+         <LoaderWrapper>
+            <Icon>
+               <FiLoader style={{ height: "30px", width: "30px" }} />
+            </Icon>
+         </LoaderWrapper>
+      );
    }
 
    return (
@@ -38,3 +46,26 @@ export const UserProvider = ({ children }) => {
       </UserContext.Provider>
    );
 };
+
+const LoaderWrapper = styled.div`
+   height: 500px;
+`;
+
+const turning = keyframes`
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    `;
+
+const Icon = styled.div`
+   position: absolute;
+   width: 30px;
+   height: 30px;
+   top: 49%;
+   left: 49%;
+   animation: ${turning} 1000ms infinite linear;
+`;

@@ -14,6 +14,7 @@ const {
    authenticateToken,
    handleLoggedUser,
    handleRate,
+   handleMovieReviews,
 } = require("./handlers");
 
 express()
@@ -27,17 +28,25 @@ express()
 
    //post a rating
    .post("/rate", handleRate) //NOT DONE!!!!!!!!!!!!!!!!!!!!!!!
+
    //signup for new user, verifies all users
    .post("/signup", handleSignUp)
+
    //verifies users, checks if password and email are correct
    .post("/signin", handleSignIn)
+
    //post a review on a specific movie
-   .post("/review", authenticateToken, handlePostReview) //NOT DONE YET!!!!!!!!!!
-   // .get("/reviews/:id")--------------------
+   .post("/review", handlePostReview) //NOT DONE YET!!!!!!!!!!
+
+   //get specific movie reviews
+   .get("/reviews/:id", handleMovieReviews)
+
    //searches all movies
    .get("/moviessearch", handleMoviesSearch)
+
    //gets all users in user collection
-   // .get("/users", handleUsers)
+   .get("/users", handleUsers)
+
    //verifies handleSign, if everything working a user will be logged in
    .get("/loggedinuser", authenticateToken, handleLoggedUser)
 

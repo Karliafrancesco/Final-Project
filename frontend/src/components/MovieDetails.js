@@ -70,7 +70,6 @@ const MovieDetails = () => {
             </ProductionCounty>
          </Wrap>
          <Reviews>
-            <div>hello</div>
             <Review movie_id={movie_id} />
          </Reviews>
       </Container>

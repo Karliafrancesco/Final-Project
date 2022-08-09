@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { BiCameraMovie } from "react-icons/bi";
+import { GrLogout } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
@@ -47,24 +48,23 @@ const Navbar = () => {
                         </SignUp>
                      </>
                   ) : (
-                     <>
+                     <SignedInProfile>
                         <LinkTo to={`/profile/${user._id}`}>
-                           <ProfileName
-                           // onClick={() => {
-                           //    nav("/profile");
-                           // }}
-                           >
-                              {user.username}
-                           </ProfileName>
+                           <ProfileName>{user.username}</ProfileName>
                         </LinkTo>
-                        <SignOut
-                           onClick={() => {
-                              removeAccessKey();
-                           }}
-                        >
-                           signout
-                        </SignOut>
-                     </>
+                        <LogoutLogo>
+                           <GrLogout
+                              onClick={() => {
+                                 removeAccessKey();
+                              }}
+                              size="35px"
+                              style={{
+                                 cursor: "pointer",
+                                 color: "red",
+                              }}
+                           ></GrLogout>
+                        </LogoutLogo>
+                     </SignedInProfile>
                   )}
                </Creds>
             </Wrapper>
@@ -143,10 +143,30 @@ const SignUp = styled.button`
    }
 `;
 
-const LinkTo = styled(Link)``;
+const LogoutLogo = styled.div`
+   &:hover {
+      background: white;
+      opacity: 0.5;
+   }
+`;
 
-const SignOut = styled.button``;
+const SignedInProfile = styled.div`
+   display: flex;
+   align-items: center;
+   margin-right: 100px;
+   gap: 25px;
+`;
+
+const LinkTo = styled(Link)`
+   text-decoration: none;
+   color: white;
+`;
+
+const SignOut = styled.button`
+   margin-right: 100px;
+`;
 
 const ProfileName = styled.div`
    cursor: pointer;
+   font-size: 20px;
 `;

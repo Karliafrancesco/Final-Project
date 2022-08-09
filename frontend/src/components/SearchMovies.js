@@ -106,12 +106,9 @@ const SearchInput = styled.input`
    width: 350px;
    height: 35px;
    border-radius: 3px;
-   font-size: 15px;
+   font-size: 20px;
    text-decoration: none;
-
-   ::placeholder {
-      padding-left: 10px;
-   }
+   padding-left: 20px;
 `;
 
 const SearchButton = styled.button`
