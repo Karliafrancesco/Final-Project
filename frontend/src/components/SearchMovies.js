@@ -14,7 +14,6 @@ const SearchMovies = () => {
    const searchMovies = async (e) => {
       e.preventDefault();
       console.log("submit");
-      console.log(query);
 
       const url = `/moviessearch/?search=${query}`;
 
@@ -29,9 +28,10 @@ const SearchMovies = () => {
    };
 
    if (movies.length <= 0) {
-      console.log("nomovies");
       <div styled={{ color: "white" }}>NO MOVIES</div>;
    }
+
+   const moviesLength = movies.length;
 
    return (
       <Container>
@@ -46,20 +46,24 @@ const SearchMovies = () => {
             <SearchButton type="submit">Search</SearchButton>
          </SearchForm>
 
-         <Wrap>
-            {movies.map((movie) => {
-               return (
-                  <LinkTo to={`/movie/${movie.id}`}>
-                     <Wrapper>
-                        <Img
-                           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                        />
-                        <Title>{movie.title}</Title>
-                     </Wrapper>
-                  </LinkTo>
-               );
-            })}
-         </Wrap>
+         {moviesLength === 0 ? (
+            <div styled={{ color: "white" }}>NO MOVIES</div>
+         ) : (
+            <Wrap>
+               {movies.map((movie) => {
+                  return (
+                     <LinkTo to={`/movie/${movie.id}`}>
+                        <Wrapper>
+                           <Img
+                              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                           />
+                           <Title>{movie.title}</Title>
+                        </Wrapper>
+                     </LinkTo>
+                  );
+               })}
+            </Wrap>
+         )}
       </Container>
    );
 };

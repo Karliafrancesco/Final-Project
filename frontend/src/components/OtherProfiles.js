@@ -12,6 +12,7 @@ const OtherProfiles = () => {
 
    const { id } = useParams();
 
+   //fetch to get info on specific user from profile
    useEffect(() => {
       fetch(`/user/${id}`)
          .then((res) => res.json())

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -16,7 +15,6 @@ const Navbar = () => {
                Search Movie
             </Options>
             <Options>Search Actors</Options>
-            {/* <Options>Search vehicle</Options> */}
          </NavBar>
       </Wrapper>
    );

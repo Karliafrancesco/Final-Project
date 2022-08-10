@@ -17,6 +17,7 @@ const {
    handleMovieReviews,
    handleUser,
    handleFavorite,
+   handleDeleteFavorite,
 } = require("./handlers");
 
 express()
@@ -52,11 +53,13 @@ express()
    //gets specific user
    .get("/user/:id", handleUser)
 
-   //inserts favortie in user
+   //adds specific movie to specific user document
    .patch("/favorite/:id", handleFavorite)
 
    //verifies handleSign, if everything working a user will be logged in
    .get("/loggedinuser", authenticateToken, handleLoggedUser)
+
+   .patch("/deleteFavorite", handleDeleteFavorite)
 
    //-----------------------------------------------------------
 

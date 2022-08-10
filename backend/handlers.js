@@ -72,6 +72,7 @@ const handleSignUp = async (req, res) => {
          lastName: req.body.lastName,
          password: hashed,
          favorites: [],
+         followers: [],
       });
 
       res.status(200).json({ status: 200, message: "User Created" });
@@ -96,6 +97,7 @@ const handleSignIn = async (req, res) => {
 
       //looks in collection to see if that user exists
       const user = await users.findOne({ username: req.body.username });
+
       // if user doesn't exists return error
       if (user === null) {
          return res
@@ -107,6 +109,7 @@ const handleSignIn = async (req, res) => {
       if (await bcrypt.compare(req.body.password, user.password)) {
          const username = req.body.username;
          const user = { name: username };
+
          // if sign if complete, user is granted ACCESS TOKEN
          const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
          res.json({ accessToken: accessToken });
@@ -179,6 +182,7 @@ const handleLoggedUser = async (req, res) => {
       const db = client.db("db-name");
       //find all users in users collection and converts it to array
       const users = await db.collection("users").find().toArray();
+
       const result = users.filter((user) => user.username === req.user.name);
       const user = result[0];
 
@@ -222,6 +226,7 @@ const handlePostReview = async (req, res) => {
    try {
       const db = client.db("db-name");
 
+      //information needed from the frontend to send to mongo
       await db.collection("reviews").insertOne({
          id: req.body.id,
          author: req.body.author,
@@ -249,6 +254,7 @@ const handleMovieReviews = async (req, res) => {
    try {
       const db = client.db("db-name");
 
+      //finds movie the user is currently looking at
       const validateMovie = await db
          .collection("reviews")
          .find({ movie_id: movieId })
@@ -294,6 +300,7 @@ const handleUser = async (req, res) => {
    try {
       const db = client.db("db-name");
 
+      //get the logged in user
       const validateUser = await db.collection("users").findOne({
          _id: ObjectId(userId),
       });
@@ -329,10 +336,13 @@ const handleFavorite = async (req, res) => {
 
    try {
       const db = client.db("db-name");
+
+      //get the logged in user
       const currentUser = await db.collection("users").findOne({
          _id: ObjectId(userId),
       });
 
+      //verifies if there is a logged in user
       if (currentUser === null) {
          return res.status(404).json({
             status: 404,
@@ -340,14 +350,15 @@ const handleFavorite = async (req, res) => {
          });
       }
 
+      //adds title and image to favorites array in user document
       const favArray = currentUser.favorites;
       favArray.push({
          title: req.body.title,
          image: req.body.poster_path,
+         movie_id: req.body.movie_id,
       });
 
-      console.log(favArray);
-
+      //updates favArray every time a user add a new favorite movie
       const insertDoc = await db.collection("users").updateOne(
          {
             _id: ObjectId(userId),
@@ -358,12 +369,72 @@ const handleFavorite = async (req, res) => {
             },
          }
       );
-      console.log(insertDoc);
 
       if (insertDoc.modifiedCount > 0) {
          return res
             .status(200)
             .json({ status: 200, message: "added to favorites" });
+      } else {
+         return res
+            .status(400)
+            .json({ status: 400, message: "Couldn't update doc" });
+      }
+   } catch (err) {
+      console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+const handleDeleteFavorite = async (req, res) => {
+   const userId = req.body.id;
+   const movieId = req.body.movie_id;
+
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      //get the logged in user
+      const currentUser = await db.collection("users").findOne({
+         _id: ObjectId(userId),
+      });
+
+      //verifies if there is a logged in user
+      if (currentUser === null) {
+         return res.status(404).json({
+            status: 404,
+            message: "user not found",
+         });
+      }
+
+      const favArray = currentUser.favorites;
+
+      const filteredfavArray = favArray.filter((movie) => {
+         return movie.movie_id !== movieId;
+      });
+      console.log(filteredfavArray);
+
+      //updates favArray every time a user removes favorite movie
+      const insertDoc = await db.collection("users").updateOne(
+         {
+            _id: ObjectId(userId),
+         },
+         {
+            $set: {
+               favorites: filteredfavArray,
+            },
+         }
+      );
+
+      if (insertDoc.modifiedCount > 0) {
+         return res
+            .status(200)
+            .json({ status: 200, message: "movie removed favorites" });
       } else {
          return res
             .status(400)
@@ -391,4 +462,5 @@ module.exports = {
    handleMovieReviews,
    handleUser,
    handleFavorite,
+   handleDeleteFavorite,
 };

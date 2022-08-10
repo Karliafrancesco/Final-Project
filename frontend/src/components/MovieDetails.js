@@ -7,11 +7,21 @@ import { UserContext } from "./UserContext";
 const client_key = process.env.REACT_APP_KEY;
 
 const MovieDetails = () => {
+   const { user } = useContext(UserContext);
+   const { movie_id } = useParams();
+
+   let favMovies = user.favorites;
+   console.log(favMovies);
+
+   //verifies if movie is already favorited
+   const isFound = favMovies.some((movie) => {
+      return movie.movie_id === movie_id;
+   });
+   console.log(isFound);
+
    const [specificMovie, setSpecificMovie] = useState("");
    const [status, setStatus] = useState("loading");
-   const { user } = useContext(UserContext);
-
-   const { movie_id } = useParams();
+   const [favorited, setFavorited] = useState(isFound);
 
    useEffect(() => {
       const movieDetails = async (e) => {
@@ -30,11 +40,13 @@ const MovieDetails = () => {
       movieDetails();
    }, []);
 
+   //function to add specific movie to specific user document
    const handleClick = (e) => {
       e.preventDefault();
       fetch(`/favorite/${user._id}`, {
          method: "PATCH",
          body: JSON.stringify({
+            movie_id: movie_id,
             title: specificMovie.title,
             poster_path: specificMovie.poster_path,
          }),
@@ -44,6 +56,7 @@ const MovieDetails = () => {
       })
          .then((res) => res.json())
          .then((response) => {
+            setFavorited(true);
             console.log(response);
          });
    };
@@ -57,12 +70,12 @@ const MovieDetails = () => {
          <Wrap>
             <TitleAndFav>
                <Title>{specificMovie.title}</Title>
-               {user !== null ? (
+               {user !== null && favorited === false ? (
                   <FavButton onClick={(e) => handleClick(e)}>
-                     add to fav
+                     add to favorites
                   </FavButton>
                ) : (
-                  <div style={{ display: "none" }}>""</div>
+                  <FavButton style={{ cursor: "disabled" }}></FavButton>
                )}
             </TitleAndFav>
             <Year>

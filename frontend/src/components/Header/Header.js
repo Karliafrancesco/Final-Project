@@ -10,6 +10,7 @@ const Navbar = () => {
 
    const { user } = useContext(UserContext);
 
+   //removes accessKey from localstorage on signout, redirects to homepage
    const removeAccessKey = () => {
       localStorage.removeItem("accessToken");
       window.location.href = "/";
