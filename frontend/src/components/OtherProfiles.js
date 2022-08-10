@@ -1,16 +1,37 @@
-import { useContext } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import styled from "styled-components";
 
-const Profile = () => {
-   const { user } = useContext(UserContext);
-   console.log(user);
+const OtherProfiles = () => {
+   const [profile, setProfile] = useState("");
+   const [status, setStatus] = useState("loading");
+   // const { user } = useContext(UserContext);
 
-   let favMovies = user.favorites;
+   let favMovies = profile.favorites;
+
+   const { id } = useParams();
+
+   useEffect(() => {
+      fetch(`/user/${id}`)
+         .then((res) => res.json())
+         .then((data) => {
+            setProfile(data.data);
+            console.log(data.data);
+            setStatus("idle");
+         })
+         .catch((err) => {
+            setStatus("error");
+         });
+   }, []);
+
+   if (status === "loading") {
+      return <div>loading</div>;
+   }
 
    return (
       <Container>
-         <Name>{user.name}</Name>
+         <Name>{profile.name}</Name>
          <Wrapper>
             <FavMovieTab>Favorite Movies</FavMovieTab>
             <Wrap>
@@ -83,4 +104,4 @@ const MovieImage = styled.img`
    padding-bottom: 5px;
 `;
 
-export default Profile;
+export default OtherProfiles;

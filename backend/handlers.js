@@ -71,6 +71,7 @@ const handleSignUp = async (req, res) => {
          name: req.body.name,
          lastName: req.body.lastName,
          password: hashed,
+         favorites: [],
       });
 
       res.status(200).json({ status: 200, message: "User Created" });
@@ -222,10 +223,13 @@ const handlePostReview = async (req, res) => {
       const db = client.db("db-name");
 
       await db.collection("reviews").insertOne({
+         id: req.body.id,
          author: req.body.author,
          movie_id: movie_id,
          review: req.body.review,
       });
+
+      res.status(200).json({ status: 200, message: "review posted" });
    } catch (e) {
       console.error("Error posting review:", e);
       return res.status(500).json({ status: 500, message: e.name });
@@ -237,7 +241,42 @@ const handlePostReview = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
-const handleMovieReviews = async (req, res) => {};
+const handleMovieReviews = async (req, res) => {
+   const movieId = req.params.id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      const validateMovie = await db
+         .collection("reviews")
+         .find({ movie_id: movieId })
+         .toArray();
+
+      const review = validateMovie.map((r) => {
+         return { author: r.author, review: r.review, authorId: r.id };
+      });
+
+      if (validateMovie !== null) {
+         return res.status(200).json({
+            status: 200,
+            data: review,
+            message: `You are viewing reviews with the id of ${movieId}`,
+         });
+      } else {
+         return res.status(404).json({
+            status: 404,
+            data: movieId,
+            message: `No movie reviews with the id of ${movieId}`,
+         });
+      }
+   } catch (err) {
+      console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -246,6 +285,96 @@ const handleRate = async (req, res) => {};
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
+
+const handleUser = async (req, res) => {
+   const userId = req.params.id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      const validateUser = await db.collection("users").findOne({
+         _id: ObjectId(userId),
+      });
+
+      if (validateUser !== null) {
+         return res.status(200).json({
+            status: 200,
+            data: validateUser,
+            message: `You are viewing a profile with the id ${userId}`,
+         });
+      } else {
+         return res.status(404).json({
+            status: 404,
+            data: userId,
+            message: `user ${userId} not found`,
+         });
+      }
+   } catch (err) {
+      console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+const handleFavorite = async (req, res) => {
+   const userId = req.params.id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+   console.log("connected");
+
+   try {
+      const db = client.db("db-name");
+      const currentUser = await db.collection("users").findOne({
+         _id: ObjectId(userId),
+      });
+
+      if (currentUser === null) {
+         return res.status(404).json({
+            status: 404,
+            message: "user not found",
+         });
+      }
+
+      const favArray = currentUser.favorites;
+      favArray.push({
+         title: req.body.title,
+         image: req.body.poster_path,
+      });
+
+      console.log(favArray);
+
+      const insertDoc = await db.collection("users").updateOne(
+         {
+            _id: ObjectId(userId),
+         },
+         {
+            $set: {
+               favorites: favArray,
+            },
+         }
+      );
+      console.log(insertDoc);
+
+      if (insertDoc.modifiedCount > 0) {
+         return res
+            .status(200)
+            .json({ status: 200, message: "added to favorites" });
+      } else {
+         return res
+            .status(400)
+            .json({ status: 400, message: "Couldn't update doc" });
+      }
+   } catch (err) {
+      console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -260,4 +389,6 @@ module.exports = {
    handleLoggedUser,
    handleRate,
    handleMovieReviews,
+   handleUser,
+   handleFavorite,
 };

@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MoviesContext } from "./MoviesContext";
 import styled from "styled-components";
 import Review from "./Review";
+import { UserContext } from "./UserContext";
 
 const client_key = process.env.REACT_APP_KEY;
 
 const MovieDetails = () => {
    const [specificMovie, setSpecificMovie] = useState("");
    const [status, setStatus] = useState("loading");
+   const { user } = useContext(UserContext);
 
    const { movie_id } = useParams();
 
@@ -29,6 +30,24 @@ const MovieDetails = () => {
       movieDetails();
    }, []);
 
+   const handleClick = (e) => {
+      e.preventDefault();
+      fetch(`/favorite/${user._id}`, {
+         method: "PATCH",
+         body: JSON.stringify({
+            title: specificMovie.title,
+            poster_path: specificMovie.poster_path,
+         }),
+         headers: {
+            "Content-type": "application/json",
+         },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            console.log(response);
+         });
+   };
+
    if (status === "loading") {
       return <div>loading</div>;
    }
@@ -36,7 +55,16 @@ const MovieDetails = () => {
    return (
       <Container>
          <Wrap>
-            <Title>{specificMovie.title}</Title>
+            <TitleAndFav>
+               <Title>{specificMovie.title}</Title>
+               {user !== null ? (
+                  <FavButton onClick={(e) => handleClick(e)}>
+                     add to fav
+                  </FavButton>
+               ) : (
+                  <div style={{ display: "none" }}>""</div>
+               )}
+            </TitleAndFav>
             <Year>
                <Release>{specificMovie.release_date}</Release>
                <div style={{ paddingRight: "5px", paddingLeft: "5px" }}>
@@ -69,9 +97,8 @@ const MovieDetails = () => {
                })}
             </ProductionCounty>
          </Wrap>
-         <Reviews>
-            <Review movie_id={movie_id} />
-         </Reviews>
+         <ReviewTitle>REVIEWS</ReviewTitle>
+         <Review movie_id={movie_id} />
       </Container>
    );
 };
@@ -93,6 +120,20 @@ const Wrap = styled.div`
    height: fit-content;
 `;
 
+const TitleAndFav = styled.div`
+   display: flex;
+   align-items: center;
+`;
+
+const FavButton = styled.button`
+   margin-top: 30px;
+   background: gold;
+   border: none;
+   margin-left: 15px;
+   padding: 10px;
+   border-radius: 15px;
+`;
+
 const Title = styled.div`
    padding-top: 30px;
    color: white;
@@ -108,7 +149,7 @@ const Year = styled.div`
 
 const Release = styled.div``;
 
-const Adult = styled.div``;
+// const Adult = styled.div``;
 
 const Poster = styled.img`
    padding-top: 10px;
@@ -139,10 +180,6 @@ const Desc = styled.div`
    width: 500px;
 `;
 
-const Wrap2 = styled.div`
-   display: flex;
-`;
-
 const ProductionCounty = styled.div`
    display: flex;
    padding-top: 15px;
@@ -151,11 +188,22 @@ const ProductionCounty = styled.div`
    border-bottom: 1px solid gray;
    width: 500px;
 `;
-const Reviews = styled.div`
-   margin-left: 200px;
-   margin-right: 200px;
+// const Reviews = styled.div`
+//    margin-left: 200px;
+//    margin-right: 200px;
+//    color: white;
+//    background-color: #232324;
+// `;
+
+const ReviewTitle = styled.div`
    color: white;
-   background-color: #232324;
+   background-color: #2b2b2b;
+   width: 700px;
+   margin-left: 200px;
+   padding-left: 40px;
+   padding-top: 30px;
+   padding-bottom: 30px;
+   font-size: 25px;
 `;
 
 export default MovieDetails;

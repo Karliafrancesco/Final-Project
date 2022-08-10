@@ -15,6 +15,8 @@ const {
    handleLoggedUser,
    handleRate,
    handleMovieReviews,
+   handleUser,
+   handleFavorite,
 } = require("./handlers");
 
 express()
@@ -36,7 +38,7 @@ express()
    .post("/signin", handleSignIn)
 
    //post a review on a specific movie
-   .post("/review", handlePostReview) //NOT DONE YET!!!!!!!!!!
+   .post("/review", handlePostReview)
 
    //get specific movie reviews
    .get("/reviews/:id", handleMovieReviews)
@@ -46,6 +48,12 @@ express()
 
    //gets all users in user collection
    .get("/users", handleUsers)
+
+   //gets specific user
+   .get("/user/:id", handleUser)
+
+   //inserts favortie in user
+   .patch("/favorite/:id", handleFavorite)
 
    //verifies handleSign, if everything working a user will be logged in
    .get("/loggedinuser", authenticateToken, handleLoggedUser)
