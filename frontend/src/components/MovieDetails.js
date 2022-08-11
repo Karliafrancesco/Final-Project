@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Review from "./Review";
 import { UserContext } from "./UserContext";
+import Rate from "./Rate";
 
 const client_key = process.env.REACT_APP_KEY;
 
@@ -75,7 +76,7 @@ const MovieDetails = () => {
                      add to favorites
                   </FavButton>
                ) : (
-                  <FavButton style={{ cursor: "disabled" }}></FavButton>
+                  <FavButton style={{ display: "none" }}></FavButton>
                )}
             </TitleAndFav>
             <Year>
@@ -91,6 +92,7 @@ const MovieDetails = () => {
                </div>
                <div>{specificMovie.runtime}mins</div>
             </Year>
+            <Rate movie_id={movie_id} />
             <Poster
                src={`https://image.tmdb.org/t/p/w500${specificMovie.poster_path}`}
             />
@@ -158,6 +160,7 @@ const Year = styled.div`
    padding-top: 10px;
    color: white;
    opacity: 0.5;
+   padding-bottom: 10px;
 `;
 
 const Release = styled.div``;

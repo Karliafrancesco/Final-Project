@@ -18,6 +18,7 @@ const {
    handleUser,
    handleFavorite,
    handleDeleteFavorite,
+   handleRating,
 } = require("./handlers");
 
 express()
@@ -30,7 +31,10 @@ express()
    // Endpoints ------------------------------------------------
 
    //post a rating
-   .post("/rate", handleRate) //NOT DONE!!!!!!!!!!!!!!!!!!!!!!!
+   .post("/rate", handleRate)
+
+   //get rating or specific movie
+   .get(`/rate/:id`, handleRating) //NOT DONE YET
 
    //signup for new user, verifies all users
    .post("/signup", handleSignUp)
@@ -59,6 +63,7 @@ express()
    //verifies handleSign, if everything working a user will be logged in
    .get("/loggedinuser", authenticateToken, handleLoggedUser)
 
+   //removes favorite in users favorties array
    .patch("/deleteFavorite", handleDeleteFavorite)
 
    //-----------------------------------------------------------

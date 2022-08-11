@@ -287,7 +287,73 @@ const handleMovieReviews = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
-const handleRate = async (req, res) => {};
+const handleRate = async (req, res) => {
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   const { rating, movie_id } = req.body;
+
+   // if (!rating) {
+   //    return res.status(400).json({ status: 400, message: "missing data" });
+   // }
+
+   try {
+      const db = client.db("db-name");
+
+      await db.collection("ratings").insertOne({
+         movie_id: movie_id,
+         rating: req.body.rating,
+         id: req.body.id,
+      });
+
+      res.status(200).json({ status: 200, message: "rating posted" });
+   } catch (e) {
+      console.error("Error posting review:", e);
+      return res.status(500).json({ status: 500, message: e.name });
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+const handleRating = async (req, res) => {
+   const movieId = req.params.id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      const validateRatings = await db
+         .collection("ratings")
+         .find({ movie_id: movieId })
+         .toArray();
+
+      const rating = validateRatings.map((r) => {
+         return { author: r.id, rating: r.rating };
+      });
+
+      if (validateRatings !== null) {
+         return res.status(200).json({
+            status: 200,
+            data: rating,
+            message: `You are viewing ratings with the id of ${movieId}`,
+         });
+      } else {
+         return res.status(404).json({
+            status: 404,
+            data: movieId,
+            message: `No movie ratings with the id of ${movieId}`,
+         });
+      }
+   } catch (err) {
+      console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -463,4 +529,5 @@ module.exports = {
    handleUser,
    handleFavorite,
    handleDeleteFavorite,
+   handleRating,
 };
