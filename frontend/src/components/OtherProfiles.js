@@ -4,13 +4,24 @@ import { UserContext } from "./UserContext";
 import styled from "styled-components";
 
 const OtherProfiles = () => {
+   const { user } = useContext(UserContext);
    const [profile, setProfile] = useState("");
    const [status, setStatus] = useState("loading");
-   // const { user } = useContext(UserContext);
 
    let favMovies = profile.favorites;
 
    const { id } = useParams();
+
+   let followers = user !== null ? user.followers : null;
+
+   const isFound =
+      user !== null
+         ? followers.some((follower) => {
+              return follower.id === id;
+           })
+         : null;
+
+   const [favorited, setFavorited] = useState(isFound);
 
    //fetch to get info on specific user from profile
    useEffect(() => {
@@ -26,13 +37,44 @@ const OtherProfiles = () => {
          });
    }, []);
 
+   // function to add follower to specific user document
+   const handleFollow = (e) => {
+      e.preventDefault();
+      fetch(`/follow/${id}`, {
+         method: "PATCH",
+         body: JSON.stringify({
+            username: user.username,
+            _id: user._id,
+            profile: profile.username,
+            author: profile._id,
+         }),
+         headers: {
+            "Content-type": "application/json",
+         },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            setFavorited(true);
+            console.log(response);
+         });
+   };
+
    if (status === "loading") {
       return <div>loading</div>;
    }
 
    return (
       <Container>
-         <Name>{profile.name}</Name>
+         <FollowAndName>
+            <Name>{profile.name}</Name>
+            {user !== null && favorited === false ? (
+               <FollowButton onClick={(e) => handleFollow(e)}>
+                  Follow
+               </FollowButton>
+            ) : (
+               <div>remove</div>
+            )}
+         </FollowAndName>
          <Wrapper>
             <FavMovieTab>Favorite Movies</FavMovieTab>
             <Wrap>
@@ -55,6 +97,13 @@ const OtherProfiles = () => {
 const Container = styled.div`
    width: 100%;
    background-color: black; ;
+`;
+
+const FollowAndName = styled.div`
+   display: flex;
+   align-items: center;
+   margin-top: 50px;
+   gap: 20px;
 `;
 
 const FavMovieTab = styled.div`
@@ -92,7 +141,6 @@ const Name = styled.div`
    color: white;
    font-size: 25px;
    margin-left: 100px;
-   margin-top: 50px;
 `;
 
 const MovieTitle = styled.div`
@@ -103,6 +151,15 @@ const MovieImage = styled.img`
    height: 300px;
    width: 200px;
    padding-bottom: 5px;
+`;
+
+const FollowButton = styled.button`
+   border: none;
+   font-weight: bold;
+   background-color: gold;
+   color: black;
+   padding: 10px;
+   border-radius: 10px;
 `;
 
 export default OtherProfiles;

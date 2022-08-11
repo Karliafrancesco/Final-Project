@@ -19,6 +19,8 @@ const {
    handleFavorite,
    handleDeleteFavorite,
    handleRating,
+   handleFollow,
+   handleUnfollow,
 } = require("./handlers");
 
 express()
@@ -65,6 +67,12 @@ express()
 
    //removes favorite in users favorties array
    .patch("/deleteFavorite", handleDeleteFavorite)
+
+   //follow a user
+   .patch("/follow/:id", handleFollow)
+
+   //unfollow
+   .patch("/unfollow", handleUnfollow)
 
    //-----------------------------------------------------------
 

@@ -1,7 +1,7 @@
 "use strict";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
 const { MONGO_URI } = process.env;
 const client_key = process.env.BACK_KEY;
 
@@ -73,6 +73,7 @@ const handleSignUp = async (req, res) => {
          password: hashed,
          favorites: [],
          followers: [],
+         following: [],
       });
 
       res.status(200).json({ status: 200, message: "User Created" });
@@ -486,16 +487,12 @@ const handleDeleteFavorite = async (req, res) => {
       console.log(filteredfavArray);
 
       //updates favArray every time a user removes favorite movie
-      const insertDoc = await db.collection("users").updateOne(
-         {
-            _id: ObjectId(userId),
-         },
-         {
-            $set: {
-               favorites: filteredfavArray,
-            },
-         }
-      );
+      const insertDoc = await db
+         .collection("users")
+         .updateOne(
+            { _id: ObjectId(userId) },
+            { $set: { favorites: filteredfavArray } }
+         );
 
       if (insertDoc.modifiedCount > 0) {
          return res
@@ -508,6 +505,138 @@ const handleDeleteFavorite = async (req, res) => {
       }
    } catch (err) {
       console.log(err.message);
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+const handleFollow = async (req, res) => {
+   const userId = req.params.id;
+   const loggedId = req.body._id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+   console.log("connected");
+
+   try {
+      const db = client.db("db-name");
+
+      //get the user
+      const currentUser = await db.collection("users").findOne({
+         _id: ObjectId(userId),
+      });
+
+      const loggedInUser = await db.collection("users").findOne({
+         _id: ObjectId(loggedId),
+      });
+
+      //verifies if there is a logged in user
+      if (currentUser === null) {
+         return res.status(404).json({
+            status: 404,
+            message: "user not found",
+         });
+      }
+
+      const follwingArray = loggedInUser.following;
+      follwingArray.push({
+         username: req.body.profile,
+         id: req.body.author,
+      });
+
+      const insert = await db
+         .collection("users")
+         .updateOne(
+            { _id: ObjectId(loggedId) },
+            { $set: { following: follwingArray } }
+         );
+
+      const followArray = currentUser.followers;
+      followArray.push({
+         username: req.body.username,
+         id: req.body._id,
+      });
+
+      const insertDoc = await db
+         .collection("users")
+         .updateOne(
+            { _id: ObjectId(userId) },
+            { $set: { followers: followArray } }
+         );
+
+      if (insertDoc.modifiedCount > 0 && insert.modifiedCount > 0) {
+         return res
+            .status(200)
+            .json({ status: 200, message: "added to followers and following" });
+      } else {
+         return res
+            .status(400)
+            .json({ status: 400, message: "Couldn't update doc" });
+      }
+   } catch (e) {
+      console.error("Error following:", e);
+      return res.status(500).json({ status: 500, message: e.name });
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+const handleUnfollow = async (req, res) => {
+   const loggedUser = req.body.id;
+   const otherUser = req.body.otherId;
+
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      const altUser = await db.collection("users").findOne({
+         _id: ObjectId(otherUser),
+      });
+
+      const currentUser = await db.collection("users").findOne({
+         _id: ObjectId(loggedUser),
+      });
+      console.log(currentUser);
+
+      if (currentUser === null) {
+         return res.status(404).json({
+            status: 404,
+            message: "user not found",
+         });
+      }
+
+      const insertDoc = await db
+         .collection("users")
+         .updateOne(
+            { _id: ObjectId(loggedUser) },
+            { $pull: { following: { id: otherUser } } }
+         );
+
+      const insertDoc2 = await db
+         .collection("users")
+         .updateOne(
+            { _id: ObjectId(otherUser) },
+            { $pull: { followers: { id: loggedUser } } }
+         );
+
+      if (insertDoc.modifiedCount > 0 && insertDoc2.modifiedCount > 0) {
+         return res
+            .status(200)
+            .json({ status: 200, message: "removie follow and following" });
+      } else {
+         return res
+            .status(400)
+            .json({ status: 400, message: "Couldn't update doc" });
+      }
+   } catch (err) {
+      console.log(err);
    } finally {
       client.close();
    }
@@ -530,4 +659,6 @@ module.exports = {
    handleFavorite,
    handleDeleteFavorite,
    handleRating,
+   handleFollow,
+   handleUnfollow,
 };

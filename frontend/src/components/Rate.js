@@ -88,7 +88,9 @@ const Rate = ({ movie_id }) => {
                </label>
             );
          })}
-         <AvgRating style={{ color: "white" }}>{sum} star rating</AvgRating>
+         <AvgRating style={{ color: "white" }}>
+            {sum} <FaStar color={"gold"} /> rating
+         </AvgRating>
       </Contain>
    );
 };
