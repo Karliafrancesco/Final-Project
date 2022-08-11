@@ -10,15 +10,15 @@ const Rate = ({ movie_id }) => {
    const [ratings, setRatings] = useState("");
    const [status, setStatus] = useState("loading");
 
-   const handleRate = (e) => {
-      e.preventDefault();
+   const handleRate = async (e, givenRating) => {
+      setRate(givenRating);
 
       fetch("/rate", {
          method: "POST",
          body: JSON.stringify({
             movie_id: movie_id,
             id: user._id,
-            rating: rate,
+            rating: givenRating,
          }),
          headers: {
             "Content-type": "application/json",
@@ -35,7 +35,6 @@ const Rate = ({ movie_id }) => {
    for (let index = 0; index < ratings.length; index++) {
       sum += ratings[index].rating / ratings.length;
    }
-
    sum = sum.toFixed(2);
    console.log(sum);
 
@@ -65,9 +64,9 @@ const Rate = ({ movie_id }) => {
                   <Radio
                      type="radio"
                      value={givenRating}
-                     onClick={(e) => {
-                        setRate(givenRating);
-                        handleRate(e);
+                     onChange={(e) => {
+                        // setRate(givenRating);
+                        handleRate(e, givenRating);
                         alert(
                            `Are you sure you want to give ${givenRating} stars ?`
                         );
