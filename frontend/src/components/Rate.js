@@ -73,15 +73,19 @@ const Rate = ({ movie_id }) => {
                         );
                      }}
                   />
-                  <Rating>
-                     <FaStar
-                        color={
-                           givenRating < rate || givenRating === rate
-                              ? "gold"
-                              : "gray"
-                        }
-                     />
-                  </Rating>
+                  {user !== null ? (
+                     <Rating>
+                        <FaStar
+                           color={
+                              givenRating < rate || givenRating === rate
+                                 ? "gold"
+                                 : "gray"
+                           }
+                        />
+                     </Rating>
+                  ) : (
+                     <div></div>
+                  )}
                </label>
             );
          })}

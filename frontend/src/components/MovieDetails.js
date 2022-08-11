@@ -11,14 +11,17 @@ const MovieDetails = () => {
    const { user } = useContext(UserContext);
    const { movie_id } = useParams();
 
-   let favMovies = user.favorites;
-   console.log(favMovies);
+   // let favMovies = user.favorites;
+
+   let favMovies = user !== null ? user.favorites : null;
 
    //verifies if movie is already favorited
-   const isFound = favMovies.some((movie) => {
-      return movie.movie_id === movie_id;
-   });
-   console.log(isFound);
+   const isFound =
+      user !== null
+         ? favMovies.some((movie) => {
+              return movie.movie_id === movie_id;
+           })
+         : null;
 
    const [specificMovie, setSpecificMovie] = useState("");
    const [status, setStatus] = useState("loading");
