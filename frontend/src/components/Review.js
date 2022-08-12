@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import LoadingWrapper from "./LoadingWrapper";
 
 const Review = ({ movie_id }) => {
    const [review, setReview] = useState("");
@@ -45,7 +46,7 @@ const Review = ({ movie_id }) => {
    }, [review]);
 
    if (status === "loading") {
-      return <div>loading</div>;
+      return <LoadingWrapper />;
    }
 
    return (

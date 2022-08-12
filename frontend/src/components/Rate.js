@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import styled from "styled-components";
 import { UserContext } from "./UserContext";
+import LoadingWrapper from "./LoadingWrapper";
 
 const Rate = ({ movie_id }) => {
    const { user } = useContext(UserContext);
@@ -52,7 +53,7 @@ const Rate = ({ movie_id }) => {
    }, [sum]);
 
    if (status === "loading") {
-      return <div>loading</div>;
+      return <LoadingWrapper />;
    }
 
    return (

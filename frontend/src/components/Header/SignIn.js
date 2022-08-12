@@ -1,11 +1,9 @@
-import { useState, useNavigate } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const SignIn = () => {
    const [username, setUsername] = useState("");
    const [password, setPassword] = useState("");
-   const [msg, setMsg] = useState("");
-   const [status, setStatus] = useState("loading");
 
    const handleSubmit = (e) => {
       e.preventDefault();

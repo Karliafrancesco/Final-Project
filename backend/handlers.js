@@ -596,10 +596,6 @@ const handleUnfollow = async (req, res) => {
    try {
       const db = client.db("db-name");
 
-      const altUser = await db.collection("users").findOne({
-         _id: ObjectId(otherUser),
-      });
-
       const currentUser = await db.collection("users").findOne({
          _id: ObjectId(loggedUser),
       });

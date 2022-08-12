@@ -1,18 +1,25 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
+import LoadingWrapper from "./LoadingWrapper";
 
 const OtherProfiles = () => {
    const { user } = useContext(UserContext);
    const [profile, setProfile] = useState("");
    const [status, setStatus] = useState("loading");
+   const [activeTab, setActiveTab] = useState("favorites");
 
    let favMovies = profile.favorites;
+   let follower = profile.followers;
+   let following = profile.following;
 
    const { id } = useParams();
 
    let followers = user !== null ? user.followers : null;
+
+   console.log(followers);
 
    const isFound =
       user !== null
@@ -59,8 +66,27 @@ const OtherProfiles = () => {
          });
    };
 
+   const handleUnfollow = (e) => {
+      e.preventDefault();
+      fetch("/unfollow", {
+         method: "PATCH",
+         body: JSON.stringify({
+            id: user._id,
+            otherId: profile._id,
+         }),
+         headers: {
+            "Content-type": "application/json",
+         },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            setFavorited(false);
+            console.log(response);
+         });
+   };
+
    if (status === "loading") {
-      return <div>loading</div>;
+      return <LoadingWrapper />;
    }
 
    return (
@@ -72,23 +98,53 @@ const OtherProfiles = () => {
                   Follow
                </FollowButton>
             ) : (
-               <div>remove</div>
+               <FollowButton onClick={(e) => handleUnfollow(e)}>
+                  Unfollow
+               </FollowButton>
             )}
          </FollowAndName>
          <Wrapper>
-            <FavMovieTab>Favorite Movies</FavMovieTab>
-            <Wrap>
-               {favMovies.map((m) => {
-                  return (
-                     <WrapFav>
-                        <MovieImage
-                           src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                        />
-                        <MovieTitle>{m.title}</MovieTitle>
-                     </WrapFav>
-                  );
-               })}
-            </Wrap>
+            <Buttons>
+               <Tab autoFocus onClick={() => setActiveTab("favorites")}>
+                  Favorite Movies
+               </Tab>
+               <Tab onClick={() => setActiveTab("followers")}>Followers</Tab>
+               <Tab onClick={() => setActiveTab("following")}>Following</Tab>
+            </Buttons>
+            {activeTab === "favorites" && (
+               <Wrap>
+                  {favMovies.map((m) => {
+                     return (
+                        <WrapFav>
+                           <LinkTo to={`/movie/${m.movie_id}`}>
+                              <MovieImage
+                                 src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                              />
+                              <MovieTitle>{m.title}</MovieTitle>
+                           </LinkTo>
+                        </WrapFav>
+                     );
+                  })}
+               </Wrap>
+            )}
+            {activeTab === "followers" && (
+               <Wrap>
+                  {follower.map((follower) => {
+                     return (
+                        <FollowerUsername>{follower.username}</FollowerUsername>
+                     );
+                  })}
+               </Wrap>
+            )}
+            {activeTab === "following" && (
+               <Wrap>
+                  {following.map((follow) => {
+                     return (
+                        <FollowerUsername>{follow.username}</FollowerUsername>
+                     );
+                  })}
+               </Wrap>
+            )}
          </Wrapper>
       </Container>
    );
@@ -106,16 +162,42 @@ const FollowAndName = styled.div`
    gap: 20px;
 `;
 
-const FavMovieTab = styled.div`
-   color: white;
+const Tab = styled.button`
    font-size: 20px;
-   padding-bottom: 10px;
-   border-bottom: 1px solid gray;
+   background: none;
+   border: none;
+   color: white;
+   cursor: pointer;
+
+   &:hover {
+      color: gold;
+      border-bottom: 1px solid gold;
+   }
+
+   &.active {
+      color: gold;
+   }
+
+   &:focus {
+      border: none;
+      border-bottom: 1px solid gold;
+      color: gold;
+   }
+`;
+
+const Buttons = styled.button`
+   display: flex;
+   justify-content: center;
+   background-color: #2b2b2b;
+   border: none;
+   gap: 20px;
+   margin-bottom: 30px;
 `;
 
 const Wrap = styled.div`
    display: flex;
    flex-wrap: wrap;
+   justify-content: center;
 `;
 
 const Wrapper = styled.div`
@@ -160,6 +242,16 @@ const FollowButton = styled.button`
    color: black;
    padding: 10px;
    border-radius: 10px;
+`;
+
+const LinkTo = styled(Link)`
+   text-decoration: none;
+`;
+
+const FollowerUsername = styled.div`
+   color: white;
+   display: flex;
+   justify-content: center;
 `;
 
 export default OtherProfiles;

@@ -5,10 +5,14 @@ import styled from "styled-components";
 
 const Profile = () => {
    const { user } = useContext(UserContext);
+
+   const [activeTab, setActiveTab] = useState("favorites");
+
    console.log(user);
 
    let favMovies = user.favorites;
-   console.log(favMovies);
+   let followers = user.followers;
+   let following = user.following;
 
    const handleRemoveFav = async (e, id) => {
       e.preventDefault();
@@ -33,26 +37,52 @@ const Profile = () => {
       <Container>
          <Name>{user.name}</Name>
          <Wrapper>
-            <FavMovieTab>Favorite Movies</FavMovieTab>
-            <Wrap>
-               {favMovies.map((m) => {
-                  return (
-                     <WrapFav>
-                        <LinkTo to={`/movie/${m.movie_id}`}>
-                           <MovieImage
-                              src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                           />
-                           <MovieTitle>{m.title}</MovieTitle>
-                        </LinkTo>
-                        <RemoveButton
-                           onClick={(e) => handleRemoveFav(e, m.movie_id)}
-                        >
-                           Remove
-                        </RemoveButton>
-                     </WrapFav>
-                  );
-               })}
-            </Wrap>
+            <Buttons>
+               <Tab autoFocus onClick={() => setActiveTab("favorites")}>
+                  Favorite Movies
+               </Tab>
+               <Tab onClick={() => setActiveTab("followers")}>Followers</Tab>
+               <Tab onClick={() => setActiveTab("following")}>Following</Tab>
+            </Buttons>
+            {activeTab === "favorites" && (
+               <Wrap>
+                  {favMovies.map((m) => {
+                     return (
+                        <WrapFav>
+                           <LinkTo to={`/movie/${m.movie_id}`}>
+                              <MovieImage
+                                 src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                              />
+                              <MovieTitle>{m.title}</MovieTitle>
+                           </LinkTo>
+                           <RemoveButton
+                              onClick={(e) => handleRemoveFav(e, m.movie_id)}
+                           >
+                              Remove
+                           </RemoveButton>
+                        </WrapFav>
+                     );
+                  })}
+               </Wrap>
+            )}
+            {activeTab === "followers" && (
+               <Wrap>
+                  {followers.map((follower) => {
+                     return (
+                        <FollowerUsername>{follower.username}</FollowerUsername>
+                     );
+                  })}
+               </Wrap>
+            )}
+            {activeTab === "following" && (
+               <Wrap>
+                  {following.map((follow) => {
+                     return (
+                        <FollowerUsername>{follow.username}</FollowerUsername>
+                     );
+                  })}
+               </Wrap>
+            )}
          </Wrapper>
       </Container>
    );
@@ -63,16 +93,33 @@ const Container = styled.div`
    background-color: black; ;
 `;
 
-const FavMovieTab = styled.div`
-   color: white;
+const Tab = styled.button`
    font-size: 20px;
-   padding-bottom: 10px;
-   border-bottom: 1px solid gray;
+   background: none;
+   border: none;
+   color: white;
+   cursor: pointer;
+
+   &:hover {
+      color: gold;
+      border-bottom: 1px solid gold;
+   }
+
+   &.active {
+      color: gold;
+   }
+
+   &:focus {
+      border: none;
+      border-bottom: 1px solid gold;
+      color: gold;
+   }
 `;
 
 const Wrap = styled.div`
    display: flex;
    flex-wrap: wrap;
+   justify-content: center;
 `;
 
 const Wrapper = styled.div`
@@ -89,7 +136,6 @@ const WrapFav = styled.div`
    display: flex;
    flex-direction: column;
    align-items: center;
-   padding: 20px 20px;
    flex-wrap: wrap;
    max-width: 200px;
 `;
@@ -124,6 +170,21 @@ const MovieImage = styled.img`
 
 const LinkTo = styled(Link)`
    text-decoration: none;
+`;
+
+const Buttons = styled.button`
+   display: flex;
+   justify-content: center;
+   background-color: #2b2b2b;
+   border: none;
+   gap: 20px;
+   margin-bottom: 30px;
+`;
+
+const FollowerUsername = styled.div`
+   color: white;
+   display: flex;
+   justify-content: center;
 `;
 
 export default Profile;
