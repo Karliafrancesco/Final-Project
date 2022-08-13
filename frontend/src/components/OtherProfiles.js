@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -11,15 +11,15 @@ const OtherProfiles = () => {
    const [status, setStatus] = useState("loading");
    const [activeTab, setActiveTab] = useState("favorites");
 
+   let nav = useNavigate();
+
    let favMovies = profile.favorites;
    let follower = profile.followers;
    let following = profile.following;
 
    const { id } = useParams();
 
-   let followers = user !== null ? user.followers : null;
-
-   console.log(followers);
+   let followers = user !== null ? user.following : null;
 
    const isFound =
       user !== null
@@ -91,18 +91,22 @@ const OtherProfiles = () => {
 
    return (
       <Container>
-         <FollowAndName>
-            <Name>{profile.name}</Name>
-            {user !== null && favorited === false ? (
-               <FollowButton onClick={(e) => handleFollow(e)}>
-                  Follow
-               </FollowButton>
-            ) : (
-               <FollowButton onClick={(e) => handleUnfollow(e)}>
-                  Unfollow
-               </FollowButton>
-            )}
-         </FollowAndName>
+         {user._id !== profile._id ? (
+            <FollowAndName>
+               <Name>{profile.name}</Name>
+               {user !== null && favorited === false ? (
+                  <FollowButton onClick={(e) => handleFollow(e)}>
+                     Follow
+                  </FollowButton>
+               ) : (
+                  <FollowButton onClick={(e) => handleUnfollow(e)}>
+                     Unfollow
+                  </FollowButton>
+               )}
+            </FollowAndName>
+         ) : (
+            nav(`/profile/${user._id}`)
+         )}
          <Wrapper>
             <Buttons>
                <Tab autoFocus onClick={() => setActiveTab("favorites")}>
@@ -112,38 +116,60 @@ const OtherProfiles = () => {
                <Tab onClick={() => setActiveTab("following")}>Following</Tab>
             </Buttons>
             {activeTab === "favorites" && (
-               <Wrap>
-                  {favMovies.map((m) => {
-                     return (
-                        <WrapFav>
-                           <LinkTo to={`/movie/${m.movie_id}`}>
-                              <MovieImage
-                                 src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                              />
-                              <MovieTitle>{m.title}</MovieTitle>
-                           </LinkTo>
-                        </WrapFav>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {favMovies.length > 0 ? (
+                     <Wrap>
+                        {favMovies.map((m) => {
+                           return (
+                              <WrapFav>
+                                 <LinkTo to={`/movie/${m.movie_id}`}>
+                                    <MovieImage
+                                       src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                    />
+                                    <MovieTitle>{m.title}</MovieTitle>
+                                 </LinkTo>
+                              </WrapFav>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>No Followers</None>
+                  )}
+               </div>
             )}
             {activeTab === "followers" && (
-               <Wrap>
-                  {follower.map((follower) => {
-                     return (
-                        <FollowerUsername>{follower.username}</FollowerUsername>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {follower.length > 0 ? (
+                     <Wrap>
+                        {follower.map((follower) => {
+                           return (
+                              <FollowerUsername>
+                                 {follower.username}
+                              </FollowerUsername>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>No Followers</None>
+                  )}
+               </div>
             )}
             {activeTab === "following" && (
-               <Wrap>
-                  {following.map((follow) => {
-                     return (
-                        <FollowerUsername>{follow.username}</FollowerUsername>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {following.length > 0 ? (
+                     <Wrap>
+                        {following.map((follow) => {
+                           return (
+                              <FollowerUsername>
+                                 {follow.username}
+                              </FollowerUsername>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>None</None>
+                  )}
+               </div>
             )}
          </Wrapper>
       </Container>
@@ -227,6 +253,8 @@ const Name = styled.div`
 
 const MovieTitle = styled.div`
    color: white;
+   display: flex;
+   justify-content: center;
 `;
 
 const MovieImage = styled.img`
@@ -252,6 +280,15 @@ const FollowerUsername = styled.div`
    color: white;
    display: flex;
    justify-content: center;
+`;
+
+const None = styled.div`
+   display: flex;
+   justify-content: center;
+   font-size: large;
+   color: white;
+   text-decoration: underline;
+   opacity: 0.5;
 `;
 
 export default OtherProfiles;

@@ -233,6 +233,7 @@ const handlePostReview = async (req, res) => {
          author: req.body.author,
          movie_id: movie_id,
          review: req.body.review,
+         date: req.body.date,
       });
 
       res.status(200).json({ status: 200, message: "review posted" });
@@ -262,7 +263,12 @@ const handleMovieReviews = async (req, res) => {
          .toArray();
 
       const review = validateMovie.map((r) => {
-         return { author: r.author, review: r.review, authorId: r.id };
+         return {
+            author: r.author,
+            review: r.review,
+            authorId: r.id,
+            date: r.date,
+         };
       });
 
       if (validateMovie !== null) {
@@ -288,24 +294,64 @@ const handleMovieReviews = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
+// const handleRate = async (req, res) => {
+//    const client = new MongoClient(MONGO_URI, options);
+//    await client.connect();
+
+//    const { movie_id } = req.body;
+
+//    try {
+//       const db = client.db("db-name");
+//       /*
+// find docuemnt and see if user already rated movie
+// */
+
+//       await db.collection("ratings").insertOne({
+//          movie_id: movie_id,
+//          rating: req.body.rating,
+//          id: req.body.id,
+//       });
+
+//       res.status(200).json({ status: 200, message: "rating posted" });
+//    } catch (e) {
+//       console.error("Error posting review:", e);
+//       return res.status(500).json({ status: 500, message: e.name });
+//    } finally {
+//       client.close();
+//    }
+// };
 const handleRate = async (req, res) => {
    const client = new MongoClient(MONGO_URI, options);
    await client.connect();
 
-   const { rating, movie_id } = req.body;
-
-   // if (!rating) {
-   //    return res.status(400).json({ status: 400, message: "missing data" });
-   // }
+   const userId = req.body.id;
+   const { movie_id } = req.body;
 
    try {
       const db = client.db("db-name");
 
-      await db.collection("ratings").insertOne({
+      //Looks if you already rated specific movie
+      const ratings = await db.collection("ratings").findOne({
+         id: userId,
          movie_id: movie_id,
-         rating: req.body.rating,
-         id: req.body.id,
       });
+
+      //if user already rated, update current rating or else create a new one
+      if (ratings !== null) {
+         await db.collection("ratings").updateOne(
+            {
+               id: userId,
+               movie_id: movie_id,
+            },
+            { $set: { rating: req.body.rating } }
+         );
+      } else {
+         await db.collection("ratings").insertOne({
+            movie_id: movie_id,
+            rating: req.body.rating,
+            id: req.body.id,
+         });
+      }
 
       res.status(200).json({ status: 200, message: "rating posted" });
    } catch (e) {

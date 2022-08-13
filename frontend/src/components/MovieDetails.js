@@ -65,6 +65,26 @@ const MovieDetails = () => {
          });
    };
 
+   const handleRemoveFav = async (e) => {
+      e.preventDefault();
+
+      fetch(`/deleteFavorite`, {
+         method: "PATCH",
+         body: JSON.stringify({
+            id: user._id,
+            movie_id: movie_id,
+         }),
+         headers: {
+            "Content-type": "application/json",
+         },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            setFavorited(false);
+            console.log(response);
+         });
+   };
+
    if (status === "loading") {
       return <div>loading</div>;
    }
@@ -72,16 +92,7 @@ const MovieDetails = () => {
    return (
       <Container>
          <Wrap>
-            <TitleAndFav>
-               <Title>{specificMovie.title}</Title>
-               {user !== null && favorited === false ? (
-                  <FavButton onClick={(e) => handleClick(e)}>
-                     add to favorites
-                  </FavButton>
-               ) : (
-                  <FavButton style={{ display: "none" }}></FavButton>
-               )}
-            </TitleAndFav>
+            <Title>{specificMovie.title}</Title>
             <Year>
                <Release>{specificMovie.release_date}</Release>
                <div style={{ paddingRight: "5px", paddingLeft: "5px" }}>
@@ -114,9 +125,20 @@ const MovieDetails = () => {
                   );
                })}
             </ProductionCounty>
+            <ProductionCounty>
+               {user !== null && favorited === false ? (
+                  <FavButton onClick={(e) => handleClick(e)}>
+                     add to favorites
+                  </FavButton>
+               ) : (
+                  <FavButton onClick={(e) => handleRemoveFav(e)}>
+                     Remove from favorites
+                  </FavButton>
+               )}
+            </ProductionCounty>
+            <ReviewTitle>REVIEWS</ReviewTitle>
+            <Review movie_id={movie_id} />
          </Wrap>
-         <ReviewTitle>REVIEWS</ReviewTitle>
-         <Review movie_id={movie_id} />
       </Container>
    );
 };
@@ -124,36 +146,34 @@ const MovieDetails = () => {
 const Container = styled.div`
    background-color: black;
    width: 100%;
-   /* display: flex; */
+   display: flex;
+   flex-direction: column;
+   align-items: center;
 `;
 
 const Wrap = styled.div`
    display: flex;
    flex-direction: column;
    background-color: #2b2b2b;
-   margin-left: 200px;
    margin-top: 70px;
-   padding-left: 40px;
-   max-width: 700px;
+   width: 740px;
    height: fit-content;
-`;
-
-const TitleAndFav = styled.div`
-   display: flex;
    align-items: center;
+   border-radius: 20px;
 `;
 
 const FavButton = styled.button`
-   margin-top: 30px;
+   /* margin-top: 30px; */
    background: gold;
    border: none;
-   margin-left: 15px;
+   margin-right: 30px;
    padding: 10px;
    border-radius: 15px;
 `;
 
 const Title = styled.div`
    padding-top: 30px;
+   padding-left: 30px;
    color: white;
    font-size: 50px;
 `;
@@ -167,8 +187,6 @@ const Year = styled.div`
 `;
 
 const Release = styled.div``;
-
-// const Adult = styled.div``;
 
 const Poster = styled.img`
    padding-top: 10px;
@@ -207,22 +225,18 @@ const ProductionCounty = styled.div`
    border-bottom: 1px solid gray;
    width: 500px;
 `;
-// const Reviews = styled.div`
-//    margin-left: 200px;
-//    margin-right: 200px;
-//    color: white;
-//    background-color: #232324;
-// `;
 
 const ReviewTitle = styled.div`
    color: white;
    background-color: #2b2b2b;
    width: 700px;
-   margin-left: 200px;
    padding-left: 40px;
    padding-top: 30px;
    padding-bottom: 30px;
    font-size: 25px;
+   display: flex;
+   justify-content: center;
+   border-bottom: 2px solid black;
 `;
 
 export default MovieDetails;

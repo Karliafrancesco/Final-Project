@@ -3,6 +3,7 @@ import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import LoadingWrapper from "./LoadingWrapper";
+import moment from "moment";
 
 const Review = ({ movie_id }) => {
    const [review, setReview] = useState("");
@@ -13,6 +14,9 @@ const Review = ({ movie_id }) => {
    const handleClick = (e) => {
       e.preventDefault();
 
+      let date = moment();
+      let formattedDate = date.format("MMMM Do YYYY, h:mm a");
+
       fetch("/review", {
          method: "POST",
          body: JSON.stringify({
@@ -20,6 +24,7 @@ const Review = ({ movie_id }) => {
             author: user.username,
             movie_id: movie_id,
             review: review,
+            date: formattedDate,
          }),
          headers: {
             "Content-type": "application/json",
@@ -60,7 +65,7 @@ const Review = ({ movie_id }) => {
                   placeholder="Write a Review"
                   value={review}
                   onChange={(e) => setReview(e.target.value)}
-                  maxLength="500"
+                  maxLength="700"
                ></TextArea>
                <ButtonAndCounter>
                   <ButtonSubmit type="submit">Post</ButtonSubmit>
@@ -71,9 +76,13 @@ const Review = ({ movie_id }) => {
             {reviewRes.map((r) => {
                return (
                   <WrapReview>
-                     <LinkTo to={`/other/profile/${r.authorId}`}>
-                        <Name>{r.author}</Name>
-                     </LinkTo>
+                     <NameAndDate>
+                        <LinkTo to={`/other/profile/${r.authorId}`}>
+                           <Name>{r.author}</Name>
+                        </LinkTo>
+                        <div>·</div>
+                        <Date>{r.date}</Date>
+                     </NameAndDate>
                      <Rev>{r.review}</Rev>
                   </WrapReview>
                );
@@ -85,7 +94,7 @@ const Review = ({ movie_id }) => {
 
 const Container = styled.div`
    width: 740px;
-   margin-left: 200px;
+   /* margin-left: 200px; */
    background-color: white;
 `;
 
@@ -94,6 +103,7 @@ const ButtonAndCounter = styled.div`
    justify-content: flex-end;
    gap: 20px;
    align-items: center;
+   border-bottom: 1px solid black;
 `;
 
 const TextArea = styled.textarea`
@@ -121,25 +131,35 @@ const ButtonSubmit = styled.button`
 const Reviews = styled.div`
    background-color: #e3e3e3;
    padding-top: 10px;
-   /* padding-bottom: 20px; */
 `;
 
 const WrapReview = styled.div`
    padding-left: 40px;
-   border-bottom: 1px solid white;
+   border-bottom: 1px solid black;
    margin-top: 20px;
+`;
+
+const NameAndDate = styled.div`
+   display: flex;
+   align-items: center;
+   padding-bottom: 15px;
+   gap: 15px;
 `;
 
 const Name = styled.div`
    font-size: 20px;
-   padding-top: 10px;
    font-weight: bold;
-   padding-bottom: 15px;
+`;
+
+const Date = styled.div`
+   font-size: 11px;
 `;
 
 const Rev = styled.div`
    padding-left: 10px;
    padding-bottom: 15px;
+   padding-right: 20px;
+   font-size: 15px;
 `;
 
 const LinkTo = styled(Link)`

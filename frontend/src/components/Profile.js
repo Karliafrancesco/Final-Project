@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import moment from "moment";
 
 const Profile = () => {
    const { user } = useContext(UserContext);
@@ -44,44 +45,69 @@ const Profile = () => {
                <Tab onClick={() => setActiveTab("followers")}>Followers</Tab>
                <Tab onClick={() => setActiveTab("following")}>Following</Tab>
             </Buttons>
+
             {activeTab === "favorites" && (
-               <Wrap>
-                  {favMovies.map((m) => {
-                     return (
-                        <WrapFav>
-                           <LinkTo to={`/movie/${m.movie_id}`}>
-                              <MovieImage
-                                 src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                              />
-                              <MovieTitle>{m.title}</MovieTitle>
-                           </LinkTo>
-                           <RemoveButton
-                              onClick={(e) => handleRemoveFav(e, m.movie_id)}
-                           >
-                              Remove
-                           </RemoveButton>
-                        </WrapFav>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {favMovies.length > 0 ? (
+                     <Wrap>
+                        {favMovies.map((m) => {
+                           return (
+                              <WrapFav>
+                                 <LinkTo to={`/movie/${m.movie_id}`}>
+                                    <MovieImage
+                                       src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                    />
+                                    <MovieTitle>{m.title}</MovieTitle>
+                                 </LinkTo>
+                                 <RemoveButton
+                                    onClick={(e) =>
+                                       handleRemoveFav(e, m.movie_id)
+                                    }
+                                 >
+                                    Remove
+                                 </RemoveButton>
+                              </WrapFav>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>No Favorites</None>
+                  )}
+               </div>
             )}
             {activeTab === "followers" && (
-               <Wrap>
-                  {followers.map((follower) => {
-                     return (
-                        <FollowerUsername>{follower.username}</FollowerUsername>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {followers.length > 0 ? (
+                     <Wrap>
+                        {followers.map((follower) => {
+                           return (
+                              <FollowerUsername>
+                                 {follower.username}
+                              </FollowerUsername>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>No Followers</None>
+                  )}
+               </div>
             )}
             {activeTab === "following" && (
-               <Wrap>
-                  {following.map((follow) => {
-                     return (
-                        <FollowerUsername>{follow.username}</FollowerUsername>
-                     );
-                  })}
-               </Wrap>
+               <div>
+                  {following.length > 0 ? (
+                     <Wrap>
+                        {following.map((follow) => {
+                           return (
+                              <FollowerUsername>
+                                 {follow.username}
+                              </FollowerUsername>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>None</None>
+                  )}
+               </div>
             )}
          </Wrapper>
       </Container>
@@ -114,6 +140,15 @@ const Tab = styled.button`
       border-bottom: 1px solid gold;
       color: gold;
    }
+`;
+
+const None = styled.div`
+   display: flex;
+   justify-content: center;
+   font-size: large;
+   color: white;
+   text-decoration: underline;
+   opacity: 0.5;
 `;
 
 const Wrap = styled.div`

@@ -66,7 +66,6 @@ const Rate = ({ movie_id }) => {
                      type="radio"
                      value={givenRating}
                      onChange={(e) => {
-                        // setRate(givenRating);
                         handleRate(e, givenRating);
                         alert(
                            `Are you sure you want to give ${givenRating} stars ?`
