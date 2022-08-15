@@ -37,14 +37,13 @@ const Rate = ({ movie_id }) => {
       sum += ratings[index].rating / ratings.length;
    }
    sum = sum.toFixed(2);
-   console.log(sum);
 
    useEffect(() => {
       fetch(`/rate/${movie_id}`)
          .then((res) => res.json())
          .then((data) => {
             setRatings(data.data);
-            console.log(data.data);
+
             setStatus("idle");
          })
          .catch((err) => {

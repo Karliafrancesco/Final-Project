@@ -8,7 +8,7 @@ import moment from "moment";
 const Review = ({ movie_id }) => {
    const [review, setReview] = useState("");
    const { user } = useContext(UserContext);
-   console.log(user);
+
    const [reviewRes, setReviewRes] = useState(null);
    const [status, setStatus] = useState("loading");
 
@@ -34,7 +34,6 @@ const Review = ({ movie_id }) => {
          .then((res) => res.json())
          .then((response) => {
             setReview("");
-            console.log(response);
          });
    };
 
@@ -43,7 +42,7 @@ const Review = ({ movie_id }) => {
          .then((res) => res.json())
          .then((data) => {
             setReviewRes(data.data);
-            console.log(data);
+
             setStatus("idle");
          })
          .catch((err) => {

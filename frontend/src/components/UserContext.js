@@ -19,7 +19,6 @@ export const UserProvider = ({ children }) => {
          })
             .then((res) => res.json())
             .then((response) => {
-               console.log(response.user);
                setUser(response.user);
             });
       }
@@ -36,7 +35,6 @@ export const UserProvider = ({ children }) => {
          })
             .then((res) => res.json())
             .then((response) => {
-               console.log(response.user);
                setUser(response.user);
             });
       }

@@ -12,7 +12,6 @@ const SearchUsers = () => {
    let navigate = useNavigate();
 
    const matchedSuggestions = users?.filter((x) => {
-      console.log("suggestion", x);
       return x.username.toLowerCase().includes(value.toLowerCase());
    });
 

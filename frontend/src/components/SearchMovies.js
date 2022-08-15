@@ -21,7 +21,6 @@ const SearchMovies = () => {
          const res = await fetch(url);
          const data = await res.json();
          setMovies(data.data.results);
-         console.log(data.data.results);
       } catch (err) {
          console.log(err);
       }
@@ -88,14 +87,14 @@ const Wrapper = styled.div`
    gap: 15px;
    padding-bottom: 10px;
    width: 250px;
-   height: 450px;
+   height: 400px;
    margin-top: 20px;
    position: relative;
 `;
 
 const Container = styled.div`
    width: 100%;
-   height: 100%;
+   height: 1000px;
    background: black;
 `;
 
@@ -135,14 +134,6 @@ const Img = styled.img`
    &:hover {
       box-shadow: 1px 1px 2px 2px #888888;
    }
-`;
-
-const ImageNotAvailable = styled.div`
-   text-align: center;
-   height: 350px;
-   width: 250px;
-   color: white;
-   box-shadow: 1px 1px 4px #888888;
 `;
 
 const Title = styled.div`

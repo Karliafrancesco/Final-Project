@@ -4,14 +4,14 @@ import styled from "styled-components";
 import Review from "./Review";
 import { UserContext } from "./UserContext";
 import Rate from "./Rate";
+import SimilarMovies from "./SimilarMovies";
+import LoadingWrapper from "./LoadingWrapper";
 
 const client_key = process.env.REACT_APP_KEY;
 
 const MovieDetails = () => {
-   const { user } = useContext(UserContext);
+   const { user, reFetch } = useContext(UserContext);
    const { movie_id } = useParams();
-
-   // let favMovies = user.favorites;
 
    let favMovies = user !== null ? user.favorites : null;
 
@@ -36,13 +36,12 @@ const MovieDetails = () => {
             const data = await res.json();
             setSpecificMovie(data);
             setStatus("idle");
-            console.log(data);
          } catch (err) {
             console.log(err);
          }
       };
       movieDetails();
-   }, []);
+   }, [movie_id]);
 
    //function to add specific movie to specific user document
    const handleClick = (e) => {
@@ -61,10 +60,12 @@ const MovieDetails = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(true);
+            reFetch();
             console.log(response);
          });
    };
 
+   //funtion to remove favortie from users favortie array
    const handleRemoveFav = async (e) => {
       e.preventDefault();
 
@@ -81,12 +82,13 @@ const MovieDetails = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(false);
+            reFetch();
             console.log(response);
          });
    };
 
    if (status === "loading") {
-      return <div>loading</div>;
+      return <LoadingWrapper />;
    }
 
    return (
@@ -145,6 +147,7 @@ const MovieDetails = () => {
             <ReviewTitle>REVIEWS</ReviewTitle>
             <Review movie_id={movie_id} />
          </Wrap>
+         <SimilarMovies movie_id={movie_id} />
       </Container>
    );
 };

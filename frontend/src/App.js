@@ -9,6 +9,7 @@ import SignUp from "./components/Header/SignUp";
 import SignIn from "./components/Header/SignIn";
 import Profile from "./components/Profile";
 import OtherProfiles from "./components/OtherProfiles";
+import PopularMovies from "./components/PopularMovies";
 
 const App = () => {
    return (
@@ -18,7 +19,8 @@ const App = () => {
          <Navbar />
          <Wrapper>
             <Routes>
-               <Route exact path="/" element={<SearchMovies />} />
+               <Route exact path="/" element={<PopularMovies />} />
+               <Route exact path="/search_movie" element={<SearchMovies />} />
                <Route
                   exact
                   path="/movie/:movie_id"
@@ -42,5 +44,5 @@ export default App;
 
 const Wrapper = styled.div`
    display: flex;
-   height: 2000px;
+   height: fit-content;
 `;

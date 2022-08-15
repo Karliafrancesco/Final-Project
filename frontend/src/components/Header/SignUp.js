@@ -29,16 +29,12 @@ const SignUp = () => {
          .then((res) => res.json())
          .then((response) => {
             setMsg(response);
-            // console.log(response);
          });
    };
 
    if (msg.status === 200) {
       nav("/");
    }
-   // } else {
-   //    console.log("error");
-   // }
 
    return (
       <>

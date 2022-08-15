@@ -36,7 +36,6 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((data) => {
             setProfile(data.data);
-            console.log(data.data);
             setStatus("idle");
          })
          .catch((err) => {
@@ -62,7 +61,6 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(true);
-            console.log(response);
          });
    };
 
@@ -81,7 +79,6 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(false);
-            console.log(response);
          });
    };
 
@@ -182,6 +179,7 @@ const OtherProfiles = () => {
 
 const Container = styled.div`
    width: 100%;
+   height: 1000px;
    background-color: black; ;
 `;
 

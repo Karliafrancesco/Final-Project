@@ -15,7 +15,6 @@ export const AllUsersProvider = ({ children }) => {
          .then((data) => {
             setUsers(data.users);
             setLoading("idle");
-            console.log(data.users);
          });
    }, []);
 

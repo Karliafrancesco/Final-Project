@@ -9,12 +9,18 @@ const Navbar = () => {
          <NavBar>
             <Options
                onClick={() => {
-                  nav("/");
+                  nav("/search_movie");
                }}
             >
                Search Movie
             </Options>
-            <Options>Search Actors</Options>
+            <Options
+               onClick={() => {
+                  nav("/");
+               }}
+            >
+               Popular Now
+            </Options>
          </NavBar>
       </Wrapper>
    );
