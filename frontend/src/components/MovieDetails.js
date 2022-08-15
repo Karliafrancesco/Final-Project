@@ -235,7 +235,6 @@ const ReviewTitle = styled.div`
    color: white;
    background-color: #2b2b2b;
    width: 700px;
-   padding-left: 40px;
    padding-top: 30px;
    padding-bottom: 30px;
    font-size: 25px;

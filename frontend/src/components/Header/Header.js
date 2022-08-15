@@ -4,6 +4,7 @@ import { GrLogout } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
+import SearchUsers from "./SearchUsers";
 
 const Navbar = () => {
    let nav = useNavigate();
@@ -28,6 +29,7 @@ const Navbar = () => {
                   <BiCameraMovie style={{ color: "black" }} />
                   <Title>Find Film</Title>
                </TitleAndIcon>
+               <SearchUsers />
                <Creds>
                   {user === null ? (
                      <>

@@ -42,7 +42,7 @@ const OtherProfiles = () => {
          .catch((err) => {
             setStatus("error");
          });
-   }, []);
+   }, [id]);
 
    // function to add follower to specific user document
    const handleFollow = (e) => {
@@ -133,7 +133,7 @@ const OtherProfiles = () => {
                         })}
                      </Wrap>
                   ) : (
-                     <None>No Followers</None>
+                     <None>No Favorites</None>
                   )}
                </div>
             )}
@@ -143,9 +143,11 @@ const OtherProfiles = () => {
                      <Wrap>
                         {follower.map((follower) => {
                            return (
-                              <FollowerUsername>
-                                 {follower.username}
-                              </FollowerUsername>
+                              <LinkTo to={`/other/profile/${follower.id}`}>
+                                 <FollowerUsername>
+                                    {follower.username}
+                                 </FollowerUsername>
+                              </LinkTo>
                            );
                         })}
                      </Wrap>
@@ -160,9 +162,11 @@ const OtherProfiles = () => {
                      <Wrap>
                         {following.map((follow) => {
                            return (
-                              <FollowerUsername>
-                                 {follow.username}
-                              </FollowerUsername>
+                              <LinkTo to={`/other/profile/${follow.id}`}>
+                                 <FollowerUsername>
+                                    {follow.username}
+                                 </FollowerUsername>
+                              </LinkTo>
                            );
                         })}
                      </Wrap>

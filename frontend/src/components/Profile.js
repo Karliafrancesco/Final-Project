@@ -36,7 +36,7 @@ const Profile = () => {
 
    return (
       <Container>
-         <Name>{user.name}</Name>
+         <Name>{user.username}</Name>
          <Wrapper>
             <Buttons>
                <Tab autoFocus onClick={() => setActiveTab("favorites")}>
@@ -78,15 +78,17 @@ const Profile = () => {
             {activeTab === "followers" && (
                <div>
                   {followers.length > 0 ? (
-                     <Wrap>
+                     <WrapNames>
                         {followers.map((follower) => {
                            return (
-                              <FollowerUsername>
-                                 {follower.username}
-                              </FollowerUsername>
+                              <LinkTo to={`/other/profile/${follower.id}`}>
+                                 <FollowerUsername>
+                                    {follower.username}
+                                 </FollowerUsername>
+                              </LinkTo>
                            );
                         })}
-                     </Wrap>
+                     </WrapNames>
                   ) : (
                      <None>No Followers</None>
                   )}
@@ -95,15 +97,17 @@ const Profile = () => {
             {activeTab === "following" && (
                <div>
                   {following.length > 0 ? (
-                     <Wrap>
+                     <WrapNames>
                         {following.map((follow) => {
                            return (
-                              <FollowerUsername>
-                                 {follow.username}
-                              </FollowerUsername>
+                              <LinkTo to={`/other/profile/${follow.id}`}>
+                                 <FollowerUsername>
+                                    {follow.username}
+                                 </FollowerUsername>
+                              </LinkTo>
                            );
                         })}
-                     </Wrap>
+                     </WrapNames>
                   ) : (
                      <None>None</None>
                   )}
@@ -221,6 +225,12 @@ const FollowerUsername = styled.div`
    color: white;
    display: flex;
    justify-content: center;
+   padding-bottom: 10px;
+`;
+
+const WrapNames = styled.div`
+   display: flex;
+   flex-direction: column;
 `;
 
 export default Profile;

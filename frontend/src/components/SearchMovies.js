@@ -27,12 +27,6 @@ const SearchMovies = () => {
       }
    };
 
-   if (movies.length <= 0) {
-      <div styled={{ color: "white" }}>NO MOVIES</div>;
-   }
-
-   const moviesLength = movies.length;
-
    return (
       <Container>
          <SearchForm onSubmit={searchMovies}>
@@ -46,8 +40,16 @@ const SearchMovies = () => {
             <SearchButton type="submit">Search</SearchButton>
          </SearchForm>
 
-         {moviesLength === 0 ? (
-            <div styled={{ color: "white" }}>NO MOVIES</div>
+         {movies === undefined ? (
+            <PleaseSearch>
+               <div
+                  style={{
+                     color: "white",
+                  }}
+               >
+                  Please search for a movie.
+               </div>
+            </PleaseSearch>
          ) : (
             <Wrap>
                {movies.map((movie) => {
@@ -153,6 +155,12 @@ const Title = styled.div`
 
 const LinkTo = styled(Link)`
    text-decoration: none;
+`;
+
+const PleaseSearch = styled.div`
+   color: white;
+   display: flex;
+   justify-content: center;
 `;
 
 export default SearchMovies;

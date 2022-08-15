@@ -30,6 +30,7 @@ const Wrapper = styled.div`
    font-weight: bold;
    background: #232324;
    box-shadow: 1px 6px 6px -6px gray;
+   z-index: 1;
 `;
 
 const NavBar = styled.div`

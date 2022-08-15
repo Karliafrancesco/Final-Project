@@ -120,9 +120,9 @@ const Review = ({ movie_id }) => {
                      </NameAndDate>
                      <Rev>{r.review}</Rev>
                      {user._id === r.authorId && (
-                        <button onClick={() => handleDelete(r._id)}>
+                        <DeleteButton onClick={() => handleDelete(r._id)}>
                            remove
-                        </button>
+                        </DeleteButton>
                      )}
                   </WrapReview>
                );
@@ -174,6 +174,8 @@ const Reviews = styled.div`
 `;
 
 const WrapReview = styled.div`
+   display: flex;
+   flex-direction: column;
    padding-left: 40px;
    border-bottom: 1px solid black;
    margin-top: 20px;
@@ -205,6 +207,15 @@ const Rev = styled.div`
 const LinkTo = styled(Link)`
    text-decoration: none;
    color: black;
+`;
+
+const DeleteButton = styled.button`
+   background: none;
+   border: none;
+   align-self: flex-end;
+   padding: 10px 20px 20px 20px;
+   cursor: pointer;
+   text-decoration: underline;
 `;
 
 export default Review;
