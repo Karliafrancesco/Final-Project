@@ -137,7 +137,7 @@ const OtherProfiles = () => {
             {activeTab === "followers" && (
                <div>
                   {follower.length > 0 ? (
-                     <Wrap>
+                     <WrapNames>
                         {follower.map((follower) => {
                            return (
                               <LinkTo to={`/other/profile/${follower.id}`}>
@@ -147,7 +147,7 @@ const OtherProfiles = () => {
                               </LinkTo>
                            );
                         })}
-                     </Wrap>
+                     </WrapNames>
                   ) : (
                      <None>No Followers</None>
                   )}
@@ -156,7 +156,7 @@ const OtherProfiles = () => {
             {activeTab === "following" && (
                <div>
                   {following.length > 0 ? (
-                     <Wrap>
+                     <WrapNames>
                         {following.map((follow) => {
                            return (
                               <LinkTo to={`/other/profile/${follow.id}`}>
@@ -166,7 +166,7 @@ const OtherProfiles = () => {
                               </LinkTo>
                            );
                         })}
-                     </Wrap>
+                     </WrapNames>
                   ) : (
                      <None>None</None>
                   )}
@@ -282,6 +282,7 @@ const FollowerUsername = styled.div`
    color: white;
    display: flex;
    justify-content: center;
+   padding-bottom: 10px;
 `;
 
 const None = styled.div`
@@ -291,6 +292,11 @@ const None = styled.div`
    color: white;
    text-decoration: underline;
    opacity: 0.5;
+`;
+
+const WrapNames = styled.div`
+   display: flex;
+   flex-direction: column;
 `;
 
 export default OtherProfiles;

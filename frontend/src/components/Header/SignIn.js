@@ -58,6 +58,7 @@ const Wrapper = styled.div`
    justify-content: center;
    position: relative;
    width: 100%;
+   height: 1000px;
    background-color: black;
 `;
 
