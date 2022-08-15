@@ -25,6 +25,23 @@ export const UserProvider = ({ children }) => {
       }
    }, []);
 
+   const reFetch = () => {
+      if (accessToken !== null) {
+         fetch("/loggedinuser", {
+            method: "GET",
+            headers: {
+               "Content-type": "application/json",
+               Authorization: "Bearer " + accessToken,
+            },
+         })
+            .then((res) => res.json())
+            .then((response) => {
+               console.log(response.user);
+               setUser(response.user);
+            });
+      }
+   };
+
    if (accessToken !== null && user === null) {
       return <LoadingWrapper />;
    }
@@ -33,6 +50,7 @@ export const UserProvider = ({ children }) => {
       <UserContext.Provider
          value={{
             user,
+            reFetch,
          }}
       >
          {children}

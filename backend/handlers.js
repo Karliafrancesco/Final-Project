@@ -268,6 +268,7 @@ const handleMovieReviews = async (req, res) => {
             review: r.review,
             authorId: r.id,
             date: r.date,
+            _id: r._id,
          };
       });
 
@@ -687,6 +688,38 @@ const handleUnfollow = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
+const handleDeleteReview = async (req, res) => {
+   const _id = req.body._id;
+   const client = new MongoClient(MONGO_URI, options);
+   await client.connect();
+
+   try {
+      const db = client.db("db-name");
+
+      const deleted = await db
+         .collection("reviews")
+         .deleteOne({ _id: ObjectId(_id) });
+
+      if (deleted.deletedCount > 0) {
+         return res
+            .status(200)
+            .json({ status: 200, message: "removed review" });
+      } else {
+         return res
+            .status(400)
+            .json({ status: 400, message: "Error removing review" });
+      }
+   } catch (e) {
+      console.error("Error removing review:", e);
+      return res.status(500).json({ status: 500, message: e.name });
+   } finally {
+      client.close();
+   }
+};
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
 module.exports = {
    handleSignUp,
    handleSignIn,
@@ -703,4 +736,5 @@ module.exports = {
    handleRating,
    handleFollow,
    handleUnfollow,
+   handleDeleteReview,
 };

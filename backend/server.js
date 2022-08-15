@@ -21,6 +21,7 @@ const {
    handleRating,
    handleFollow,
    handleUnfollow,
+   handleDeleteReview,
 } = require("./handlers");
 
 express()
@@ -49,6 +50,8 @@ express()
 
    //get specific movie reviews
    .get("/reviews/:id", handleMovieReviews)
+
+   .delete("/review", handleDeleteReview)
 
    //searches all movies
    .get("/moviessearch", handleMoviesSearch)

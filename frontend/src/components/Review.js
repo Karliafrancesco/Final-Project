@@ -8,6 +8,7 @@ import moment from "moment";
 const Review = ({ movie_id }) => {
    const [review, setReview] = useState("");
    const { user } = useContext(UserContext);
+   console.log(user);
    const [reviewRes, setReviewRes] = useState(null);
    const [status, setStatus] = useState("loading");
 
@@ -42,13 +43,31 @@ const Review = ({ movie_id }) => {
          .then((res) => res.json())
          .then((data) => {
             setReviewRes(data.data);
-            console.log(data.data);
+            console.log(data);
             setStatus("idle");
          })
          .catch((err) => {
             setStatus("error");
          });
    }, [review]);
+
+   const handleDelete = (_id) => {
+      fetch("/review", {
+         method: "DELETE",
+         body: JSON.stringify({
+            _id,
+         }),
+         headers: { "Content-Type": "application/json" },
+      })
+         .then((res) => res.json())
+         .then((response) => {
+            setReviewRes(
+               reviewRes.filter((review) => {
+                  return review._id !== _id;
+               })
+            );
+         });
+   };
 
    if (status === "loading") {
       return <LoadingWrapper />;
@@ -57,7 +76,23 @@ const Review = ({ movie_id }) => {
    return (
       <Container>
          {user === null ? (
-            <div>Sign in to post a review</div>
+            <form>
+               <TextArea
+                  type="text"
+                  placeholder="Sign in to wrtie a review"
+                  maxLength="0"
+                  disabled
+               ></TextArea>
+               <ButtonAndCounter>
+                  <ButtonSubmit
+                     style={{ background: "grey" }}
+                     type="submit"
+                     disabled
+                  >
+                     Post
+                  </ButtonSubmit>
+               </ButtonAndCounter>
+            </form>
          ) : (
             <form onSubmit={(e) => handleClick(e)}>
                <TextArea
@@ -84,6 +119,11 @@ const Review = ({ movie_id }) => {
                         <Date>{r.date}</Date>
                      </NameAndDate>
                      <Rev>{r.review}</Rev>
+                     {user._id === r.authorId && (
+                        <button onClick={() => handleDelete(r._id)}>
+                           remove
+                        </button>
+                     )}
                   </WrapReview>
                );
             })}

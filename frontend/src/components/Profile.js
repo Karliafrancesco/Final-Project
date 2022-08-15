@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 const Profile = () => {
-   const { user } = useContext(UserContext);
+   const { user, reFetch } = useContext(UserContext);
 
    const [activeTab, setActiveTab] = useState("favorites");
 
@@ -30,7 +30,7 @@ const Profile = () => {
       })
          .then((res) => res.json())
          .then((response) => {
-            console.log(response);
+            reFetch();
          });
    };
 
@@ -173,6 +173,7 @@ const WrapFav = styled.div`
    align-items: center;
    flex-wrap: wrap;
    max-width: 200px;
+   padding: 15px;
 `;
 
 const RemoveButton = styled.button`

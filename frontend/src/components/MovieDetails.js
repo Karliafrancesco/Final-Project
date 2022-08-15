@@ -125,17 +125,23 @@ const MovieDetails = () => {
                   );
                })}
             </ProductionCounty>
-            <ProductionCounty>
-               {user !== null && favorited === false ? (
-                  <FavButton onClick={(e) => handleClick(e)}>
-                     add to favorites
-                  </FavButton>
-               ) : (
-                  <FavButton onClick={(e) => handleRemoveFav(e)}>
-                     Remove from favorites
-                  </FavButton>
-               )}
-            </ProductionCounty>
+            {user !== null ? (
+               <ProductionCounty>
+                  {user !== null && favorited === false ? (
+                     <FavButton onClick={(e) => handleClick(e)}>
+                        add to favorites
+                     </FavButton>
+                  ) : (
+                     <FavButton onClick={(e) => handleRemoveFav(e)}>
+                        Remove from favorites
+                     </FavButton>
+                  )}
+               </ProductionCounty>
+            ) : (
+               <ProductionCounty>
+                  <FavButton>Sign in to add to favorites</FavButton>
+               </ProductionCounty>
+            )}
             <ReviewTitle>REVIEWS</ReviewTitle>
             <Review movie_id={movie_id} />
          </Wrap>
@@ -173,7 +179,6 @@ const FavButton = styled.button`
 
 const Title = styled.div`
    padding-top: 30px;
-   padding-left: 30px;
    color: white;
    font-size: 50px;
 `;
