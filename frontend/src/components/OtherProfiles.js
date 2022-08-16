@@ -36,6 +36,7 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((data) => {
             setProfile(data.data);
+            console.log(data.data);
             setStatus("idle");
          })
          .catch((err) => {
@@ -87,93 +88,184 @@ const OtherProfiles = () => {
    }
 
    return (
-      <Container>
-         {user._id !== profile._id ? (
-            <FollowAndName>
-               <Name>{profile.name}</Name>
-               {user !== null && favorited === false ? (
-                  <FollowButton onClick={(e) => handleFollow(e)}>
-                     Follow
-                  </FollowButton>
-               ) : (
-                  <FollowButton onClick={(e) => handleUnfollow(e)}>
-                     Unfollow
-                  </FollowButton>
-               )}
-            </FollowAndName>
+      <>
+         {user === null ? (
+            <Container>
+               <FollowAndName>
+                  <Name>{profile.username}</Name>
+               </FollowAndName>
+               <Wrapper>
+                  <Buttons>
+                     <Tab autoFocus onClick={() => setActiveTab("favorites")}>
+                        Favorite Movies
+                     </Tab>
+                     <Tab onClick={() => setActiveTab("followers")}>
+                        Followers
+                     </Tab>
+                     <Tab onClick={() => setActiveTab("following")}>
+                        Following
+                     </Tab>
+                  </Buttons>
+                  {activeTab === "favorites" && (
+                     <div>
+                        {favMovies.length > 0 ? (
+                           <Wrap>
+                              {favMovies.map((m) => {
+                                 return (
+                                    <WrapFav>
+                                       <LinkTo to={`/movie/${m.movie_id}`}>
+                                          <MovieImage
+                                             src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                          />
+                                          <MovieTitle>{m.title}</MovieTitle>
+                                       </LinkTo>
+                                    </WrapFav>
+                                 );
+                              })}
+                           </Wrap>
+                        ) : (
+                           <None>No Favorites</None>
+                        )}
+                     </div>
+                  )}
+                  {activeTab === "followers" && (
+                     <div>
+                        {follower.length > 0 ? (
+                           <WrapNames>
+                              {follower.map((follower) => {
+                                 return (
+                                    <LinkTo
+                                       to={`/other/profile/${follower.id}`}
+                                    >
+                                       <FollowerUsername>
+                                          {follower.username}
+                                       </FollowerUsername>
+                                    </LinkTo>
+                                 );
+                              })}
+                           </WrapNames>
+                        ) : (
+                           <None>No Followers</None>
+                        )}
+                     </div>
+                  )}
+                  {activeTab === "following" && (
+                     <div>
+                        {following.length > 0 ? (
+                           <WrapNames>
+                              {following.map((follow) => {
+                                 return (
+                                    <LinkTo to={`/other/profile/${follow.id}`}>
+                                       <FollowerUsername>
+                                          {follow.username}
+                                       </FollowerUsername>
+                                    </LinkTo>
+                                 );
+                              })}
+                           </WrapNames>
+                        ) : (
+                           <None>None</None>
+                        )}
+                     </div>
+                  )}
+               </Wrapper>
+            </Container>
          ) : (
-            nav(`/profile/${user._id}`)
+            <Container>
+               {user._id !== profile._id ? (
+                  <FollowAndName>
+                     <Name>{profile.username}</Name>
+                     {user !== null && favorited === false ? (
+                        <FollowButton onClick={(e) => handleFollow(e)}>
+                           Follow
+                        </FollowButton>
+                     ) : (
+                        <FollowButton onClick={(e) => handleUnfollow(e)}>
+                           Unfollow
+                        </FollowButton>
+                     )}
+                  </FollowAndName>
+               ) : (
+                  nav(`/profile/${user._id}`)
+               )}
+               <Wrapper>
+                  <Buttons>
+                     <Tab autoFocus onClick={() => setActiveTab("favorites")}>
+                        Favorite Movies
+                     </Tab>
+                     <Tab onClick={() => setActiveTab("followers")}>
+                        Followers
+                     </Tab>
+                     <Tab onClick={() => setActiveTab("following")}>
+                        Following
+                     </Tab>
+                  </Buttons>
+                  {activeTab === "favorites" && (
+                     <div>
+                        {favMovies.length > 0 ? (
+                           <Wrap>
+                              {favMovies.map((m) => {
+                                 return (
+                                    <WrapFav>
+                                       <LinkTo to={`/movie/${m.movie_id}`}>
+                                          <MovieImage
+                                             src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                          />
+                                          <MovieTitle>{m.title}</MovieTitle>
+                                       </LinkTo>
+                                    </WrapFav>
+                                 );
+                              })}
+                           </Wrap>
+                        ) : (
+                           <None>No Favorites</None>
+                        )}
+                     </div>
+                  )}
+                  {activeTab === "followers" && (
+                     <div>
+                        {follower.length > 0 ? (
+                           <WrapNames>
+                              {follower.map((follower) => {
+                                 return (
+                                    <LinkTo
+                                       to={`/other/profile/${follower.id}`}
+                                    >
+                                       <FollowerUsername>
+                                          {follower.username}
+                                       </FollowerUsername>
+                                    </LinkTo>
+                                 );
+                              })}
+                           </WrapNames>
+                        ) : (
+                           <None>No Followers</None>
+                        )}
+                     </div>
+                  )}
+                  {activeTab === "following" && (
+                     <div>
+                        {following.length > 0 ? (
+                           <WrapNames>
+                              {following.map((follow) => {
+                                 return (
+                                    <LinkTo to={`/other/profile/${follow.id}`}>
+                                       <FollowerUsername>
+                                          {follow.username}
+                                       </FollowerUsername>
+                                    </LinkTo>
+                                 );
+                              })}
+                           </WrapNames>
+                        ) : (
+                           <None>None</None>
+                        )}
+                     </div>
+                  )}
+               </Wrapper>
+            </Container>
          )}
-         <Wrapper>
-            <Buttons>
-               <Tab autoFocus onClick={() => setActiveTab("favorites")}>
-                  Favorite Movies
-               </Tab>
-               <Tab onClick={() => setActiveTab("followers")}>Followers</Tab>
-               <Tab onClick={() => setActiveTab("following")}>Following</Tab>
-            </Buttons>
-            {activeTab === "favorites" && (
-               <div>
-                  {favMovies.length > 0 ? (
-                     <Wrap>
-                        {favMovies.map((m) => {
-                           return (
-                              <WrapFav>
-                                 <LinkTo to={`/movie/${m.movie_id}`}>
-                                    <MovieImage
-                                       src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                                    />
-                                    <MovieTitle>{m.title}</MovieTitle>
-                                 </LinkTo>
-                              </WrapFav>
-                           );
-                        })}
-                     </Wrap>
-                  ) : (
-                     <None>No Favorites</None>
-                  )}
-               </div>
-            )}
-            {activeTab === "followers" && (
-               <div>
-                  {follower.length > 0 ? (
-                     <WrapNames>
-                        {follower.map((follower) => {
-                           return (
-                              <LinkTo to={`/other/profile/${follower.id}`}>
-                                 <FollowerUsername>
-                                    {follower.username}
-                                 </FollowerUsername>
-                              </LinkTo>
-                           );
-                        })}
-                     </WrapNames>
-                  ) : (
-                     <None>No Followers</None>
-                  )}
-               </div>
-            )}
-            {activeTab === "following" && (
-               <div>
-                  {following.length > 0 ? (
-                     <WrapNames>
-                        {following.map((follow) => {
-                           return (
-                              <LinkTo to={`/other/profile/${follow.id}`}>
-                                 <FollowerUsername>
-                                    {follow.username}
-                                 </FollowerUsername>
-                              </LinkTo>
-                           );
-                        })}
-                     </WrapNames>
-                  ) : (
-                     <None>None</None>
-                  )}
-               </div>
-            )}
-         </Wrapper>
-      </Container>
+      </>
    );
 };
 

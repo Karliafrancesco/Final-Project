@@ -118,7 +118,7 @@ const Review = ({ movie_id }) => {
                         <Date>{r.date}</Date>
                      </NameAndDate>
                      <Rev>{r.review}</Rev>
-                     {user._id === r.authorId && (
+                     {user !== null && user._id === r.authorId && (
                         <DeleteButton onClick={() => handleDelete(r._id)}>
                            remove
                         </DeleteButton>
