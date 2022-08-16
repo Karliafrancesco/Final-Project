@@ -1,19 +1,16 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
 import { MoviesContext } from "./MoviesContext";
 
-const client_key = process.env.REACT_APP_KEY;
-
 const SearchMovies = () => {
-   //input query, movies
    const [query, setQuery] = useState("");
-   // const [movies, setMovies] = useState([]);
+
    const { movies, setMovies } = useContext(MoviesContext);
 
    const searchMovies = async (e) => {
       e.preventDefault();
-      console.log("submit");
 
       const url = `/moviessearch/?search=${query}`;
 
@@ -53,7 +50,7 @@ const SearchMovies = () => {
             <Wrap>
                {movies.map((movie) => {
                   return (
-                     <LinkTo to={`/movie/${movie.id}`}>
+                     <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
                         <Wrapper>
                            <Img
                               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

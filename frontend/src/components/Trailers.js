@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+
 import LoadingWrapper from "./LoadingWrapper";
 
 const client_key = process.env.REACT_APP_KEY;
@@ -17,7 +18,6 @@ const Trailers = ({ movie_id }) => {
             const res = await fetch(url);
             const data = await res.json();
             setPopularMovie(data.results[0].key);
-            console.log(data.results[0].key);
             setStatus("idle");
          } catch (err) {
             console.log(err);

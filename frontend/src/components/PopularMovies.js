@@ -1,7 +1,8 @@
-import LoadingWrapper from "./LoadingWrapper";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+
+import LoadingWrapper from "./LoadingWrapper";
 
 const client_key = process.env.REACT_APP_KEY;
 

@@ -2,8 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import LoadingWrapper from "./LoadingWrapper";
 import moment from "moment";
+
+import LoadingWrapper from "./LoadingWrapper";
 
 const Review = ({ movie_id }) => {
    const [review, setReview] = useState("");
@@ -107,25 +108,23 @@ const Review = ({ movie_id }) => {
             </form>
          )}
          <Reviews>
-            {reviewRes.map((r) => {
-               return (
-                  <WrapReview>
-                     <NameAndDate>
-                        <LinkTo to={`/other/profile/${r.authorId}`}>
-                           <Name>{r.author}</Name>
-                        </LinkTo>
-                        <div>·</div>
-                        <Date>{r.date}</Date>
-                     </NameAndDate>
-                     <Rev>{r.review}</Rev>
-                     {user !== null && user._id === r.authorId && (
-                        <DeleteButton onClick={() => handleDelete(r._id)}>
-                           remove
-                        </DeleteButton>
-                     )}
-                  </WrapReview>
-               );
-            })}
+            {reviewRes.map((r) => (
+               <WrapReview key={r.authorId}>
+                  <NameAndDate>
+                     <LinkTo to={`/other/profile/${r.authorId}`}>
+                        <Name>{r.author}</Name>
+                     </LinkTo>
+                     <div>·</div>
+                     <Date>{r.date}</Date>
+                  </NameAndDate>
+                  <Rev>{r.review}</Rev>
+                  {user !== null && user._id === r.authorId && (
+                     <DeleteButton onClick={() => handleDelete(r._id)}>
+                        remove
+                     </DeleteButton>
+                  )}
+               </WrapReview>
+            ))}
          </Reviews>
       </Container>
    );

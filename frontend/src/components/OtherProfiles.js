@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { UserContext } from "./UserContext";
-import { Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import styled from "styled-components";
+
+import { UserContext } from "./UserContext";
 import LoadingWrapper from "./LoadingWrapper";
 
 const OtherProfiles = () => {
@@ -11,20 +11,18 @@ const OtherProfiles = () => {
    const [status, setStatus] = useState("loading");
    const [activeTab, setActiveTab] = useState("favorites");
 
-   let nav = useNavigate();
-
-   let favMovies = profile.favorites;
-   let follower = profile.followers;
-   let following = profile.following;
+   const favMovies = profile.favorites;
+   const followers = profile.followers;
+   const following = profile.following;
 
    const { id } = useParams();
 
-   let followers = user !== null ? user.following : null;
+   const userFollowers = user !== null ? user.following : null;
 
    //verifies if movie is already favorited
    const isFound =
       user !== null
-         ? followers.some((follower) => {
+         ? userFollowers.some((follower) => {
               return follower.id === id;
            })
          : null;
@@ -87,235 +85,127 @@ const OtherProfiles = () => {
       return <LoadingWrapper />;
    }
 
+   if (user && user._id === profile._id) {
+      <Navigate to={`/profile/${user._id}`} />;
+   }
+
    return (
-      <>
-         {user === null ? (
-            <Container>
-               {/* <FollowAndName style={{ display: "flex" }}> */}
-               <Name style={{ marginTop: "30px" }}>{profile.username}</Name>
-               <FollowNumbers>
-                  <div
-                     onClick={() => setActiveTab("followers")}
-                     style={{ display: "flex", cursor: "pointer" }}
-                  >
-                     <strong>{profile.followers.length}</strong>
-                     <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
-                        Followers
-                     </div>
-                  </div>
-                  <div
-                     onClick={() => setActiveTab("following")}
-                     style={{ display: "flex", cursor: "pointer" }}
-                  >
-                     <strong>{profile.following.length}</strong>
-                     <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
-                        Following
-                     </div>
-                  </div>
-               </FollowNumbers>
-               {/* </FollowAndName> */}
-               <Wrapper>
-                  <Buttons>
-                     <Tab autoFocus onClick={() => setActiveTab("favorites")}>
-                        Favorite Movies
-                     </Tab>
-                     <Tab onClick={() => setActiveTab("followers")}>
-                        Followers
-                     </Tab>
-                     <Tab onClick={() => setActiveTab("following")}>
-                        Following
-                     </Tab>
-                  </Buttons>
-                  {activeTab === "favorites" && (
-                     <div>
-                        {favMovies.length > 0 ? (
-                           <Wrap>
-                              {favMovies.map((m) => {
-                                 return (
-                                    <WrapFav key={m.movie_id}>
-                                       <LinkTo to={`/movie/${m.movie_id}`}>
-                                          <MovieImage
-                                             src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                                          />
-                                          <MovieTitle>{m.title}</MovieTitle>
-                                       </LinkTo>
-                                    </WrapFav>
-                                 );
-                              })}
-                           </Wrap>
-                        ) : (
-                           <None>No Favorites</None>
-                        )}
-                     </div>
-                  )}
-                  {activeTab === "followers" && (
-                     <div>
-                        {follower.length > 0 ? (
-                           <WrapNames>
-                              {follower.map((follower) => {
-                                 return (
-                                    <LinkTo
-                                       key={follower.id}
-                                       to={`/other/profile/${follower.id}`}
-                                    >
-                                       <FollowerUsername>
-                                          {follower.username}
-                                       </FollowerUsername>
-                                    </LinkTo>
-                                 );
-                              })}
-                           </WrapNames>
-                        ) : (
-                           <None>No Followers</None>
-                        )}
-                     </div>
-                  )}
-                  {activeTab === "following" && (
-                     <div>
-                        {following.length > 0 ? (
-                           <WrapNames>
-                              {following.map((follow) => {
-                                 return (
-                                    <LinkTo
-                                       key={follow.id}
-                                       to={`/other/profile/${follow.id}`}
-                                    >
-                                       <FollowerUsername>
-                                          {follow.username}
-                                       </FollowerUsername>
-                                    </LinkTo>
-                                 );
-                              })}
-                           </WrapNames>
-                        ) : (
-                           <None>None</None>
-                        )}
-                     </div>
-                  )}
-               </Wrapper>
-            </Container>
-         ) : (
-            <Container>
-               {user._id !== profile._id ? (
+      <Container>
+         <>
+            <FollowAndName>
+               <Name>{profile.username}</Name>
+               {user && (
                   <>
-                     <FollowAndName>
-                        <Name>{profile.username}</Name>
-                        {user !== null && favorited === false ? (
-                           <FollowButton onClick={(e) => handleFollow(e)}>
-                              Follow
-                           </FollowButton>
-                        ) : (
-                           <FollowButton onClick={(e) => handleUnfollow(e)}>
-                              Unfollow
-                           </FollowButton>
-                        )}
-                     </FollowAndName>
-                     <FollowNumbers>
-                        <div
-                           onClick={() => setActiveTab("followers")}
-                           style={{ display: "flex", cursor: "pointer" }}
-                        >
-                           <strong>{followers.length}</strong>
-                           <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
-                              Followers
-                           </div>
-                        </div>
-                        <div
-                           onClick={() => setActiveTab("following")}
-                           style={{ display: "flex", cursor: "pointer" }}
-                        >
-                           <strong>{following.length}</strong>
-                           <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
-                              Following
-                           </div>
-                        </div>
-                     </FollowNumbers>
+                     {favorited === false ? (
+                        <FollowButton onClick={(e) => handleFollow(e)}>
+                           Follow
+                        </FollowButton>
+                     ) : (
+                        <FollowButton onClick={(e) => handleUnfollow(e)}>
+                           Unfollow
+                        </FollowButton>
+                     )}
                   </>
-               ) : (
-                  nav(`/profile/${user._id}`)
                )}
-               <Wrapper>
-                  <Buttons>
-                     <Tab autoFocus onClick={() => setActiveTab("favorites")}>
-                        Favorite Movies
-                     </Tab>
-                     <Tab onClick={() => setActiveTab("followers")}>
-                        Followers
-                     </Tab>
-                     <Tab onClick={() => setActiveTab("following")}>
-                        Following
-                     </Tab>
-                  </Buttons>
-                  {activeTab === "favorites" && (
-                     <div>
-                        {favMovies.length > 0 ? (
-                           <Wrap>
-                              {favMovies.map((m) => {
-                                 return (
-                                    <WrapFav key={m.movie_id}>
-                                       <LinkTo to={`/movie/${m.movie_id}`}>
-                                          <MovieImage
-                                             src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                                          />
-                                          <MovieTitle>{m.title}</MovieTitle>
-                                       </LinkTo>
-                                    </WrapFav>
-                                 );
-                              })}
-                           </Wrap>
-                        ) : (
-                           <None>No Favorites</None>
-                        )}
-                     </div>
+            </FollowAndName>
+            <FollowNumbers>
+               <div
+                  onClick={() => setActiveTab("followers")}
+                  style={{ display: "flex", cursor: "pointer" }}
+               >
+                  <strong>{followers.length}</strong>
+                  <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                     Followers
+                  </div>
+               </div>
+               <div
+                  onClick={() => setActiveTab("following")}
+                  style={{ display: "flex", cursor: "pointer" }}
+               >
+                  <strong>{following.length}</strong>
+                  <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                     Following
+                  </div>
+               </div>
+            </FollowNumbers>
+         </>
+
+         <Wrapper>
+            <Buttons>
+               <Tab autoFocus onClick={() => setActiveTab("favorites")}>
+                  Favorite Movies
+               </Tab>
+               <Tab onClick={() => setActiveTab("followers")}>Followers</Tab>
+               <Tab onClick={() => setActiveTab("following")}>Following</Tab>
+            </Buttons>
+            {activeTab === "favorites" && (
+               <div>
+                  {favMovies.length > 0 ? (
+                     <Wrap>
+                        {favMovies.map((m) => {
+                           return (
+                              <WrapFav key={m.movie_id}>
+                                 <LinkTo to={`/movie/${m.movie_id}`}>
+                                    <MovieImage
+                                       src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                    />
+                                    <MovieTitle>{m.title}</MovieTitle>
+                                 </LinkTo>
+                              </WrapFav>
+                           );
+                        })}
+                     </Wrap>
+                  ) : (
+                     <None>No Favorites</None>
                   )}
-                  {activeTab === "followers" && (
-                     <div>
-                        {follower.length > 0 ? (
-                           <WrapNames>
-                              {follower.map((follower) => {
-                                 return (
-                                    <LinkTo
-                                       key={follower.id}
-                                       to={`/other/profile/${follower.id}`}
-                                    >
-                                       <FollowerUsername>
-                                          {follower.username}
-                                       </FollowerUsername>
-                                    </LinkTo>
-                                 );
-                              })}
-                           </WrapNames>
-                        ) : (
-                           <None>No Followers</None>
-                        )}
-                     </div>
+               </div>
+            )}
+            {activeTab === "followers" && (
+               <div>
+                  {followers.length > 0 ? (
+                     <WrapNames>
+                        {followers.map((follower) => {
+                           return (
+                              <LinkTo
+                                 key={follower.id}
+                                 to={`/other/profile/${follower.id}`}
+                              >
+                                 <FollowerUsername>
+                                    {follower.username}
+                                 </FollowerUsername>
+                              </LinkTo>
+                           );
+                        })}
+                     </WrapNames>
+                  ) : (
+                     <None>No Followers</None>
                   )}
-                  {activeTab === "following" && (
-                     <div>
-                        {following.length > 0 ? (
-                           <WrapNames>
-                              {following.map((follow) => {
-                                 return (
-                                    <LinkTo
-                                       key={follow.id}
-                                       to={`/other/profile/${follow.id}`}
-                                    >
-                                       <FollowerUsername>
-                                          {follow.username}
-                                       </FollowerUsername>
-                                    </LinkTo>
-                                 );
-                              })}
-                           </WrapNames>
-                        ) : (
-                           <None>None</None>
-                        )}
-                     </div>
+               </div>
+            )}
+            {activeTab === "following" && (
+               <div>
+                  {following.length > 0 ? (
+                     <WrapNames>
+                        {following.map((follow) => {
+                           return (
+                              <LinkTo
+                                 key={follow.id}
+                                 to={`/other/profile/${follow.id}`}
+                              >
+                                 <FollowerUsername>
+                                    {follow.username}
+                                 </FollowerUsername>
+                              </LinkTo>
+                           );
+                        })}
+                     </WrapNames>
+                  ) : (
+                     <None>None</None>
                   )}
-               </Wrapper>
-            </Container>
-         )}
-      </>
+               </div>
+            )}
+         </Wrapper>
+      </Container>
    );
 };
 
@@ -363,7 +253,7 @@ const Tab = styled.button`
    }
 `;
 
-const Buttons = styled.button`
+const Buttons = styled.div`
    display: flex;
    justify-content: center;
    background-color: #2b2b2b;

@@ -2,14 +2,11 @@ import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import moment from "moment";
 
 const Profile = () => {
    const { user, reFetch } = useContext(UserContext);
 
    const [activeTab, setActiveTab] = useState("favorites");
-
-   console.log(user);
 
    let favMovies = user.favorites;
    let followers = user.followers;
@@ -70,25 +67,21 @@ const Profile = () => {
                <div>
                   {favMovies.length > 0 ? (
                      <Wrap>
-                        {favMovies.map((m) => {
-                           return (
-                              <WrapFav key={m.movie_id}>
-                                 <LinkTo to={`/movie/${m.movie_id}`}>
-                                    <MovieImage
-                                       src={`https://image.tmdb.org/t/p/w500${m.image}`}
-                                    />
-                                    <MovieTitle>{m.title}</MovieTitle>
-                                 </LinkTo>
-                                 <RemoveButton
-                                    onClick={(e) =>
-                                       handleRemoveFav(e, m.movie_id)
-                                    }
-                                 >
-                                    Remove
-                                 </RemoveButton>
-                              </WrapFav>
-                           );
-                        })}
+                        {favMovies.map((m) => (
+                           <WrapFav key={m.movie_id}>
+                              <LinkTo to={`/movie/${m.movie_id}`}>
+                                 <MovieImage
+                                    src={`https://image.tmdb.org/t/p/w500${m.image}`}
+                                 />
+                                 <MovieTitle>{m.title}</MovieTitle>
+                              </LinkTo>
+                              <RemoveButton
+                                 onClick={(e) => handleRemoveFav(e, m.movie_id)}
+                              >
+                                 Remove
+                              </RemoveButton>
+                           </WrapFav>
+                        ))}
                      </Wrap>
                   ) : (
                      <None>No Favorites</None>
@@ -99,15 +92,16 @@ const Profile = () => {
                <div>
                   {followers.length > 0 ? (
                      <WrapNames>
-                        {followers.map((follower) => {
-                           return (
-                              <LinkTo to={`/other/profile/${follower.id}`}>
-                                 <FollowerUsername>
-                                    {follower.username}
-                                 </FollowerUsername>
-                              </LinkTo>
-                           );
-                        })}
+                        {followers.map((follower) => (
+                           <LinkTo
+                              key={follower.id}
+                              to={`/other/profile/${follower.id}`}
+                           >
+                              <FollowerUsername>
+                                 {follower.username}
+                              </FollowerUsername>
+                           </LinkTo>
+                        ))}
                      </WrapNames>
                   ) : (
                      <None>No Followers</None>
@@ -118,15 +112,16 @@ const Profile = () => {
                <div>
                   {following.length > 0 ? (
                      <WrapNames>
-                        {following.map((follow) => {
-                           return (
-                              <LinkTo to={`/other/profile/${follow.id}`}>
-                                 <FollowerUsername>
-                                    {follow.username}
-                                 </FollowerUsername>
-                              </LinkTo>
-                           );
-                        })}
+                        {following.map((follow) => (
+                           <LinkTo
+                              key={follow.id}
+                              to={`/other/profile/${follow.id}`}
+                           >
+                              <FollowerUsername>
+                                 {follow.username}
+                              </FollowerUsername>
+                           </LinkTo>
+                        ))}
                      </WrapNames>
                   ) : (
                      <None>None</None>
@@ -241,7 +236,7 @@ const LinkTo = styled(Link)`
    text-decoration: none;
 `;
 
-const Buttons = styled.button`
+const Buttons = styled.div`
    display: flex;
    justify-content: center;
    background-color: #2b2b2b;

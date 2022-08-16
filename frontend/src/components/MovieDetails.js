@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import Review from "./Review";
+
 import { UserContext } from "./UserContext";
+import Review from "./Review";
 import Rate from "./Rate";
 import SimilarMovies from "./SimilarMovies";
 import LoadingWrapper from "./LoadingWrapper";
@@ -279,7 +280,7 @@ const Tab = styled.button`
    }
 `;
 
-const Buttons = styled.button`
+const Buttons = styled.div`
    display: flex;
    justify-content: center;
    background-color: #2b2b2b;

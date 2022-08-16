@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import styled from "styled-components";
+
 import { UserContext } from "./UserContext";
 import LoadingWrapper from "./LoadingWrapper";
 
