@@ -6,6 +6,7 @@ import { UserContext } from "./UserContext";
 import Rate from "./Rate";
 import SimilarMovies from "./SimilarMovies";
 import LoadingWrapper from "./LoadingWrapper";
+import Trailers from "./Trailers";
 
 const client_key = process.env.REACT_APP_KEY;
 
@@ -26,6 +27,7 @@ const MovieDetails = () => {
    const [specificMovie, setSpecificMovie] = useState("");
    const [status, setStatus] = useState("loading");
    const [favorited, setFavorited] = useState(isFound);
+   const [activeTab, setActiveTab] = useState("trailer");
 
    useEffect(() => {
       const movieDetails = async (e) => {
@@ -144,8 +146,14 @@ const MovieDetails = () => {
                   <FavButton>Sign in to add to favorites</FavButton>
                </ProductionCounty>
             )}
-            <ReviewTitle>REVIEWS</ReviewTitle>
-            <Review movie_id={movie_id} />
+            <Buttons>
+               <Tab onClick={() => setActiveTab("reviews")}>Reviews</Tab>
+               <Tab autoFocus onClick={() => setActiveTab("trailer")}>
+                  Trailer
+               </Tab>
+            </Buttons>
+            {activeTab === "reviews" && <Review movie_id={movie_id} />}
+            {activeTab === "trailer" && <Trailers movie_id={movie_id} />}
          </Wrap>
          <SimilarMovies movie_id={movie_id} />
       </Container>
@@ -234,16 +242,50 @@ const ProductionCounty = styled.div`
    width: 500px;
 `;
 
-const ReviewTitle = styled.div`
+// const ReviewTitle = styled.div`
+//    color: white;
+//    background-color: #2b2b2b;
+//    width: 700px;
+//    padding-top: 30px;
+//    padding-bottom: 30px;
+//    font-size: 25px;
+//    display: flex;
+//    justify-content: center;
+//    border-bottom: 2px solid black;
+// `;
+
+const Tab = styled.button`
+   font-size: 20px;
+   background: none;
+   border: none;
    color: white;
-   background-color: #2b2b2b;
-   width: 700px;
-   padding-top: 30px;
-   padding-bottom: 30px;
-   font-size: 25px;
+   cursor: pointer;
+   border-bottom: 2px solid black;
+
+   &:hover {
+      color: gold;
+      border-bottom: 2px solid gold;
+   }
+
+   &.active {
+      color: gold;
+   }
+
+   &:focus {
+      border: none;
+      border-bottom: 2px solid gold;
+      color: gold;
+   }
+`;
+
+const Buttons = styled.button`
    display: flex;
    justify-content: center;
-   border-bottom: 2px solid black;
+   background-color: #2b2b2b;
+   border: none;
+   gap: 20px;
+   margin-bottom: 30px;
+   padding-top: 30px;
 `;
 
 export default MovieDetails;
