@@ -22,16 +22,13 @@ const SearchUsers = () => {
                setValue(ev.target.value);
                setSearch(false);
             }}
-            type="text"
+            type="search"
             placeholder="Search users"
             value={value}
          />
 
-         <MdClear onClick={() => setValue("")} />
-
          {value?.length >= 2 && matchedSuggestions?.length > 0 ? (
             <Ul>
-               {" "}
                {!search &&
                   matchedSuggestions.slice(0, 15).map((suggestion) => {
                      return (
@@ -46,7 +43,7 @@ const SearchUsers = () => {
                            {suggestion.username}
                         </Li>
                      );
-                  })}{" "}
+                  })}
             </Ul>
          ) : null}
       </SearchBar>
@@ -60,10 +57,7 @@ const Input = styled.input`
    font-size: 15px;
    text-decoration: none;
    padding-left: 20px;
-   margin-right: 15px;
 `;
-
-const Submit = styled.input``;
 
 const Ul = styled.ul`
    z-index: 10;

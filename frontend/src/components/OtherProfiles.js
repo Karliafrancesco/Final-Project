@@ -29,8 +29,7 @@ const OtherProfiles = () => {
 
    const [favorited, setFavorited] = useState(isFound);
 
-   //fetch to get info on specific user from profile
-   useEffect(() => {
+   const reload = () => {
       fetch(`/user/${id}`)
          .then((res) => res.json())
          .then((data) => {
@@ -40,6 +39,11 @@ const OtherProfiles = () => {
          .catch((err) => {
             setStatus("error");
          });
+   };
+
+   //fetch to get info on specific user from profile
+   useEffect(() => {
+      reload();
    }, [id]);
 
    // function to add follower to specific user document
@@ -60,6 +64,7 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(true);
+            reload();
          });
    };
 
@@ -78,6 +83,7 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((response) => {
             setFavorited(false);
+            reload();
          });
    };
 
@@ -86,7 +92,7 @@ const OtherProfiles = () => {
    }
 
    if (user && user._id === profile._id) {
-      <Navigate to={`/profile/${user._id}`} />;
+      return <Navigate to={`/profile/${user._id}`} />;
    }
 
    return (

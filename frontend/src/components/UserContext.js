@@ -8,23 +8,7 @@ export const UserProvider = ({ children }) => {
 
    const accessToken = localStorage.getItem("accessToken");
 
-   useEffect(() => {
-      if (accessToken !== null) {
-         fetch("/loggedinuser", {
-            method: "GET",
-            headers: {
-               "Content-type": "application/json",
-               Authorization: "Bearer " + accessToken,
-            },
-         })
-            .then((res) => res.json())
-            .then((response) => {
-               setUser(response.user);
-            });
-      }
-   }, []);
-
-   const reFetch = () => {
+   const fetchUser = () => {
       if (accessToken !== null) {
          fetch("/loggedinuser", {
             method: "GET",
@@ -40,6 +24,10 @@ export const UserProvider = ({ children }) => {
       }
    };
 
+   useEffect(() => {
+      fetchUser();
+   }, []);
+
    if (accessToken !== null && user === null) {
       return <LoadingWrapper />;
    }
@@ -48,7 +36,7 @@ export const UserProvider = ({ children }) => {
       <UserContext.Provider
          value={{
             user,
-            reFetch,
+            reFetch: fetchUser,
          }}
       >
          {children}
