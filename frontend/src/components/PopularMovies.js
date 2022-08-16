@@ -35,7 +35,7 @@ const PopularMovies = ({ movie_id }) => {
          <Wrap>
             {popularMovie.map((movie) => {
                return (
-                  <LinkTo to={`/movie/${movie.id}`}>
+                  <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
                      <Wrapper>
                         <Img
                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

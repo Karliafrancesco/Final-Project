@@ -32,7 +32,7 @@ const Rate = ({ movie_id }) => {
    };
 
    let sum = 0;
-
+   //calculates the index as a rating the user clicked on
    for (let index = 0; index < ratings.length; index++) {
       sum += ratings[index].rating / ratings.length;
    }
@@ -60,7 +60,7 @@ const Rate = ({ movie_id }) => {
          {[...Array(5)].map((item, index) => {
             const givenRating = index + 1;
             return (
-               <label>
+               <label key={index}>
                   <Radio
                      type="radio"
                      value={givenRating}

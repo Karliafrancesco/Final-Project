@@ -29,6 +29,7 @@ const MovieDetails = () => {
    const [favorited, setFavorited] = useState(isFound);
    const [activeTab, setActiveTab] = useState("trailer");
 
+   //gets information on specific movie using params
    useEffect(() => {
       const movieDetails = async (e) => {
          const url = `https://api.themoviedb.org/3/movie/${movie_id}?api_key=${client_key}`;
@@ -115,17 +116,19 @@ const MovieDetails = () => {
                src={`https://image.tmdb.org/t/p/w500${specificMovie.poster_path}`}
             />
             <Genres>
-               {specificMovie.genres.map((items) => {
-                  return <Categories>{items.name}</Categories>;
+               {specificMovie.genres.map((items, index) => {
+                  return <Categories key={index}>{items.name}</Categories>;
                })}
             </Genres>
             <Desc>{specificMovie.overview}</Desc>
             <ProductionCounty>
                {" "}
                Production Countries:
-               {specificMovie.production_countries.map((country) => {
+               {specificMovie.production_countries.map((country, index) => {
                   return (
-                     <div style={{ paddingLeft: "10px" }}>{country.name}</div>
+                     <div key={index} style={{ paddingLeft: "10px" }}>
+                        {country.name}
+                     </div>
                   );
                })}
             </ProductionCounty>
@@ -148,9 +151,7 @@ const MovieDetails = () => {
             )}
             <Buttons>
                <Tab onClick={() => setActiveTab("reviews")}>Reviews</Tab>
-               <Tab autoFocus onClick={() => setActiveTab("trailer")}>
-                  Trailer
-               </Tab>
+               <Tab onClick={() => setActiveTab("trailer")}>Trailer</Tab>
             </Buttons>
             {activeTab === "reviews" && <Review movie_id={movie_id} />}
             {activeTab === "trailer" && <Trailers movie_id={movie_id} />}

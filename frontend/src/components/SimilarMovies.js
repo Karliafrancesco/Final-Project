@@ -36,7 +36,7 @@ const SimilarMovies = ({ movie_id }) => {
          <Wrap>
             {similarMovie.slice(0, 4).map((movie) => {
                return (
-                  <LinkTo to={`/movie/${movie.id}`}>
+                  <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
                      <Wrapper>
                         <Img
                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}

@@ -21,6 +21,7 @@ const OtherProfiles = () => {
 
    let followers = user !== null ? user.following : null;
 
+   //verifies if movie is already favorited
    const isFound =
       user !== null
          ? followers.some((follower) => {
@@ -36,7 +37,6 @@ const OtherProfiles = () => {
          .then((res) => res.json())
          .then((data) => {
             setProfile(data.data);
-            console.log(data.data);
             setStatus("idle");
          })
          .catch((err) => {
@@ -91,9 +91,29 @@ const OtherProfiles = () => {
       <>
          {user === null ? (
             <Container>
-               <FollowAndName>
-                  <Name>{profile.username}</Name>
-               </FollowAndName>
+               {/* <FollowAndName style={{ display: "flex" }}> */}
+               <Name style={{ marginTop: "30px" }}>{profile.username}</Name>
+               <FollowNumbers>
+                  <div
+                     onClick={() => setActiveTab("followers")}
+                     style={{ display: "flex", cursor: "pointer" }}
+                  >
+                     <strong>{profile.followers.length}</strong>
+                     <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                        Followers
+                     </div>
+                  </div>
+                  <div
+                     onClick={() => setActiveTab("following")}
+                     style={{ display: "flex", cursor: "pointer" }}
+                  >
+                     <strong>{profile.following.length}</strong>
+                     <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                        Following
+                     </div>
+                  </div>
+               </FollowNumbers>
+               {/* </FollowAndName> */}
                <Wrapper>
                   <Buttons>
                      <Tab autoFocus onClick={() => setActiveTab("favorites")}>
@@ -112,7 +132,7 @@ const OtherProfiles = () => {
                            <Wrap>
                               {favMovies.map((m) => {
                                  return (
-                                    <WrapFav>
+                                    <WrapFav key={m.movie_id}>
                                        <LinkTo to={`/movie/${m.movie_id}`}>
                                           <MovieImage
                                              src={`https://image.tmdb.org/t/p/w500${m.image}`}
@@ -135,6 +155,7 @@ const OtherProfiles = () => {
                               {follower.map((follower) => {
                                  return (
                                     <LinkTo
+                                       key={follower.id}
                                        to={`/other/profile/${follower.id}`}
                                     >
                                        <FollowerUsername>
@@ -155,7 +176,10 @@ const OtherProfiles = () => {
                            <WrapNames>
                               {following.map((follow) => {
                                  return (
-                                    <LinkTo to={`/other/profile/${follow.id}`}>
+                                    <LinkTo
+                                       key={follow.id}
+                                       to={`/other/profile/${follow.id}`}
+                                    >
                                        <FollowerUsername>
                                           {follow.username}
                                        </FollowerUsername>
@@ -173,18 +197,40 @@ const OtherProfiles = () => {
          ) : (
             <Container>
                {user._id !== profile._id ? (
-                  <FollowAndName>
-                     <Name>{profile.username}</Name>
-                     {user !== null && favorited === false ? (
-                        <FollowButton onClick={(e) => handleFollow(e)}>
-                           Follow
-                        </FollowButton>
-                     ) : (
-                        <FollowButton onClick={(e) => handleUnfollow(e)}>
-                           Unfollow
-                        </FollowButton>
-                     )}
-                  </FollowAndName>
+                  <>
+                     <FollowAndName>
+                        <Name>{profile.username}</Name>
+                        {user !== null && favorited === false ? (
+                           <FollowButton onClick={(e) => handleFollow(e)}>
+                              Follow
+                           </FollowButton>
+                        ) : (
+                           <FollowButton onClick={(e) => handleUnfollow(e)}>
+                              Unfollow
+                           </FollowButton>
+                        )}
+                     </FollowAndName>
+                     <FollowNumbers>
+                        <div
+                           onClick={() => setActiveTab("followers")}
+                           style={{ display: "flex", cursor: "pointer" }}
+                        >
+                           <strong>{followers.length}</strong>
+                           <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                              Followers
+                           </div>
+                        </div>
+                        <div
+                           onClick={() => setActiveTab("following")}
+                           style={{ display: "flex", cursor: "pointer" }}
+                        >
+                           <strong>{following.length}</strong>
+                           <div style={{ paddingLeft: "5px", opacity: "0.5" }}>
+                              Following
+                           </div>
+                        </div>
+                     </FollowNumbers>
+                  </>
                ) : (
                   nav(`/profile/${user._id}`)
                )}
@@ -206,7 +252,7 @@ const OtherProfiles = () => {
                            <Wrap>
                               {favMovies.map((m) => {
                                  return (
-                                    <WrapFav>
+                                    <WrapFav key={m.movie_id}>
                                        <LinkTo to={`/movie/${m.movie_id}`}>
                                           <MovieImage
                                              src={`https://image.tmdb.org/t/p/w500${m.image}`}
@@ -229,6 +275,7 @@ const OtherProfiles = () => {
                               {follower.map((follower) => {
                                  return (
                                     <LinkTo
+                                       key={follower.id}
                                        to={`/other/profile/${follower.id}`}
                                     >
                                        <FollowerUsername>
@@ -249,7 +296,10 @@ const OtherProfiles = () => {
                            <WrapNames>
                               {following.map((follow) => {
                                  return (
-                                    <LinkTo to={`/other/profile/${follow.id}`}>
+                                    <LinkTo
+                                       key={follow.id}
+                                       to={`/other/profile/${follow.id}`}
+                                    >
                                        <FollowerUsername>
                                           {follow.username}
                                        </FollowerUsername>
@@ -273,6 +323,14 @@ const Container = styled.div`
    width: 100%;
    height: 1000px;
    background-color: black; ;
+`;
+
+const FollowNumbers = styled.div`
+   display: flex;
+   color: white;
+   margin-left: 100px;
+   margin-top: 15px;
+   gap: 15px;
 `;
 
 const FollowAndName = styled.div`
@@ -312,6 +370,7 @@ const Buttons = styled.button`
    border: none;
    gap: 20px;
    margin-bottom: 30px;
+   margin-top: 10px;
 `;
 
 const Wrap = styled.div`
@@ -322,7 +381,7 @@ const Wrap = styled.div`
 
 const Wrapper = styled.div`
    margin-left: 100px;
-   margin-top: 50px;
+   margin-top: 30px;
    background: #2b2b2b;
    margin-right: 100px;
    padding: 20px;
@@ -334,7 +393,7 @@ const WrapFav = styled.div`
    display: flex;
    flex-direction: column;
    align-items: center;
-   padding: 20px 20px;
+   padding: 5px 15px 30px 15px;
    flex-wrap: wrap;
    max-width: 200px;
 `;
