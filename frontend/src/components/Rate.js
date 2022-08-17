@@ -29,6 +29,7 @@ const Rate = ({ movie_id }) => {
          .then((res) => res.json())
          .then((response) => {
             console.log(response);
+            re();
          });
    };
 
@@ -39,7 +40,7 @@ const Rate = ({ movie_id }) => {
    }
    sum = sum.toFixed(2);
 
-   useEffect(() => {
+   const re = () => {
       fetch(`/rate/${movie_id}`)
          .then((res) => res.json())
          .then((data) => {
@@ -50,6 +51,11 @@ const Rate = ({ movie_id }) => {
          .catch((err) => {
             setStatus("error");
          });
+   };
+
+   //updates review
+   useEffect(() => {
+      re();
    }, [sum]);
 
    if (status === "loading") {
