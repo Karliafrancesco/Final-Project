@@ -35,18 +35,16 @@ const SimilarMovies = ({ movie_id }) => {
       <>
          <PageTitle>Similar Movies</PageTitle>
          <Wrap>
-            {similarMovie.slice(0, 4).map((movie) => {
-               return (
-                  <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
-                     <Wrapper>
-                        <Img
-                           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                        />
-                        <Title>{movie.title}</Title>
-                     </Wrapper>
-                  </LinkTo>
-               );
-            })}
+            {similarMovie.slice(0, 4).map((movie) => (
+               <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
+                  <Wrapper>
+                     <Img
+                        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                     />
+                     <Title>{movie.title}</Title>
+                  </Wrapper>
+               </LinkTo>
+            ))}
          </Wrap>
       </>
    );

@@ -125,13 +125,11 @@ const MovieDetails = () => {
             <ProductionCounty>
                {" "}
                Production Countries:
-               {specificMovie.production_countries.map((country, index) => {
-                  return (
-                     <div key={index} style={{ paddingLeft: "10px" }}>
-                        {country.name}
-                     </div>
-                  );
-               })}
+               {specificMovie.production_countries.map((country, index) => (
+                  <div key={index} style={{ paddingLeft: "10px" }}>
+                     {country.name}
+                  </div>
+               ))}
             </ProductionCounty>
             {user !== null ? (
                <ProductionCounty>

@@ -129,6 +129,7 @@ const handleSignIn = async (req, res) => {
 
 const handleMoviesSearch = async (req, res) => {
    try {
+      //used for my search bar, req.query.search to search my text input
       let response = await fetch(
          `https://api.themoviedb.org/3/search/movie?api_key=${client_key}&query=${req.query.search}`
       );
@@ -187,18 +188,7 @@ const handleLoggedUser = async (req, res) => {
       const result = users.filter((user) => user.username === req.user.name);
       const user = result[0];
 
-      // if (users) {
-      //    //to delete password from each user so its not shown for security
-      //    users.forEach((obj) => {
-      //       delete obj["password"];
-      //    });
-      //    return
       res.status(200).json({ status: 200, user: user, message: "logged" });
-      // } else {
-      //    return res
-      //       .status(404)
-      //       .json({ status: 404, message: "No users found" });
-      // }
    } catch (e) {
       console.error("Error signing in:", e);
       return res.status(500).json({ status: 500, message: e.name });
@@ -295,32 +285,6 @@ const handleMovieReviews = async (req, res) => {
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 
-// const handleRate = async (req, res) => {
-//    const client = new MongoClient(MONGO_URI, options);
-//    await client.connect();
-
-//    const { movie_id } = req.body;
-
-//    try {
-//       const db = client.db("db-name");
-//       /*
-// find docuemnt and see if user already rated movie
-// */
-
-//       await db.collection("ratings").insertOne({
-//          movie_id: movie_id,
-//          rating: req.body.rating,
-//          id: req.body.id,
-//       });
-
-//       res.status(200).json({ status: 200, message: "rating posted" });
-//    } catch (e) {
-//       console.error("Error posting review:", e);
-//       return res.status(500).json({ status: 500, message: e.name });
-//    } finally {
-//       client.close();
-//    }
-// };
 const handleRate = async (req, res) => {
    const client = new MongoClient(MONGO_URI, options);
    await client.connect();
@@ -374,11 +338,13 @@ const handleRating = async (req, res) => {
    try {
       const db = client.db("db-name");
 
+      //checks the ratings collection to find a movie that specific id
       const validateRatings = await db
          .collection("ratings")
          .find({ movie_id: movieId })
          .toArray();
 
+      //get info from frontend
       const rating = validateRatings.map((r) => {
          return { author: r.id, rating: r.rating };
       });
@@ -643,6 +609,7 @@ const handleUnfollow = async (req, res) => {
    try {
       const db = client.db("db-name");
 
+      //find the logged in user
       const currentUser = await db.collection("users").findOne({
          _id: ObjectId(loggedUser),
       });
@@ -655,13 +622,14 @@ const handleUnfollow = async (req, res) => {
          });
       }
 
+      //updates the logged user following array
       const insertDoc = await db
          .collection("users")
          .updateOne(
             { _id: ObjectId(loggedUser) },
             { $pull: { following: { id: otherUser } } }
          );
-
+      //updates the followers array of other user
       const insertDoc2 = await db
          .collection("users")
          .updateOne(

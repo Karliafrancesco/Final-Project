@@ -132,7 +132,6 @@ const Review = ({ movie_id }) => {
 
 const Container = styled.div`
    width: 740px;
-   /* margin-left: 200px; */
    background-color: white;
 `;
 

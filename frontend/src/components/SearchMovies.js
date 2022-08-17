@@ -48,18 +48,16 @@ const SearchMovies = () => {
             </PleaseSearch>
          ) : (
             <Wrap>
-               {movies.map((movie) => {
-                  return (
-                     <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
-                        <Wrapper>
-                           <Img
-                              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                           />
-                           <Title>{movie.title}</Title>
-                        </Wrapper>
-                     </LinkTo>
-                  );
-               })}
+               {movies.map((movie) => (
+                  <LinkTo key={movie.id} to={`/movie/${movie.id}`}>
+                     <Wrapper>
+                        <Img
+                           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                        />
+                        <Title>{movie.title}</Title>
+                     </Wrapper>
+                  </LinkTo>
+               ))}
             </Wrap>
          )}
       </Container>

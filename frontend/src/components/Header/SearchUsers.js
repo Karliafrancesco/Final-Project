@@ -30,20 +30,18 @@ const SearchUsers = () => {
          {value?.length >= 2 && matchedSuggestions?.length > 0 ? (
             <Ul>
                {!search &&
-                  matchedSuggestions.slice(0, 15).map((suggestion) => {
-                     return (
-                        <Li
-                           key={suggestion._id}
-                           onClick={() => {
-                              navigate(`/other/profile/${suggestion._id}`);
-                              setValue(suggestion.username);
-                              setSearch(!search);
-                           }}
-                        >
-                           {suggestion.username}
-                        </Li>
-                     );
-                  })}
+                  matchedSuggestions.slice(0, 15).map((suggestion) => (
+                     <Li
+                        key={suggestion._id}
+                        onClick={() => {
+                           navigate(`/other/profile/${suggestion._id}`);
+                           setValue(suggestion.username);
+                           setSearch(!search);
+                        }}
+                     >
+                        {suggestion.username}
+                     </Li>
+                  ))}
             </Ul>
          ) : null}
       </SearchBar>
