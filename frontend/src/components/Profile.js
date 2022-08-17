@@ -251,6 +251,10 @@ const FollowerUsername = styled.div`
    display: flex;
    justify-content: center;
    padding-bottom: 10px;
+
+   &:hover {
+      color: gold;
+   }
 `;
 
 const WrapNames = styled.div`
