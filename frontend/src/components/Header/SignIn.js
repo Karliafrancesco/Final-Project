@@ -20,8 +20,10 @@ const SignIn = () => {
       })
          .then((res) => res.json())
          .then((response) => {
-            if (response.status == 400) {
+            if (response.accessToken == undefined) {
                console.log("unfdefined token");
+               window.alert("Incorrect information, please try again.");
+               window.location.href = "/signin";
             } else {
                localStorage.setItem("accessToken", response.accessToken);
                console.log(response);
